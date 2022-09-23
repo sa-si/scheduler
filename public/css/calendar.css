@@ -1,0 +1,41 @@
+table {
+  margin: 40px 20px 40px 20px;
+}
+
+.calendar table {
+  table-layout: fixed;
+}
+
+tbody > tr > td:first-child:not(.monthly-task)::after {
+  background-color: pink;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  content: '';
+  display: inline-block;
+  height: 20px;
+  width: 8px;
+}
+
+tbody > tr:last-child th:after {
+  border-bottom: none;
+}
+
+.monthly-task::after {
+  content: none;
+}
+
+.flex {
+  display: flex;
+}
+
+.check-day {
+  border: solid 1px #999999;
+}
+
+.display-none {
+  display: none;
+}
+
+.display-none:checked + .check-day {
+  color: red;
+}
