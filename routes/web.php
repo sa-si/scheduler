@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +21,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
+Route::get('/home', [HomeController::class, 'home'])->name('home');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
+    Route::get('/', [HomeController::class, 'index'])->name('index');
     Route::get('/weekly-calendar', function () {
         return view('weekly-calendar');
     });
@@ -53,4 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
         return view('profile');
     });
+    Route::get('/profile', [HomeController::class, 'edit'])->name('user.edit');
+    Route::post('/profile', [HomeController::class, 'update'])->name('user.update');
 });
