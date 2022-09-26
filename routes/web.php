@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/planning-task-input', function () {
         return view('planning-task-input');
     });
+    Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
     Route::get('/execution-task-input', function () {
         return view('execution-task-input');
     });
