@@ -1,22 +1,27 @@
 window.onload = function () {
-    var target = document.getElementsByClassName("js_initial-disable");
-    // console.log(target.length);
+    var target = document.getElementsByClassName("js_initial-disable-wrapper");
     Array.prototype.forEach.call(target, function (element) {
-        var initialDisableInputItem = element.getElementsByTagName("input");
-        if (initialDisableInputItem) {
-            for (var i = 0; i < initialDisableInputItem.length; i++) {
-                if (initialDisableInputItem[i].disabled === false) {
-                    initialDisableInputItem[i].setAttribute("disabled", true);
-                }
-            }
-        }
+        var inputTypeRadio = element.querySelector("input[type='radio']");
+        var itemsParent =
+            element.getElementsByClassName("js_initial-disable")[0];
+        var initialInputItems = itemsParent.getElementsByTagName("input");
+        var initialSelectItems = itemsParent.getElementsByTagName("select");
 
-        var initialDisableSelectItem = element.getElementsByTagName("select");
-        if (initialDisableSelectItem) {
-            for (var i = 0; i < initialDisableSelectItem.length; i++) {
-                if (initialDisableSelectItem[i].disabled === false) {
-                    initialDisableSelectItem[i].setAttribute("disabled", true);
-                }
+        if (inputTypeRadio.checked) {
+            for (var i = 0; i < initialInputItems.length; i++) {
+                initialInputItems[i].removeAttribute("disabled");
+            }
+
+            for (var i = 0; i < initialSelectItems.length; i++) {
+                initialSelectItems[i].removeAttribute("disabled");
+            }
+        } else {
+            for (var i = 0; i < initialInputItems.length; i++) {
+                initialInputItems[i].setAttribute("disabled", true);
+            }
+
+            for (var i = 0; i < initialSelectItems.length; i++) {
+                initialSelectItems[i].setAttribute("disabled", true);
             }
         }
     });

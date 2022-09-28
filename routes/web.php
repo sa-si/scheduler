@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PlanningTaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,13 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/year-calendar', function () {
         return view('year-calendar');
     });
-    Route::get('/planning-task-input', function () {
-        return view('planning-task-input');
-    });
+    Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');
     Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
-    Route::get('/execution-task-input', function () {
-        return view('execution-task-input');
-    });
     Route::get('/planning-task-update', function () {
         return view('planning-task-update');
     });
