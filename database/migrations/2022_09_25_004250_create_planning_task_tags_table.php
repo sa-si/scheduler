@@ -14,8 +14,8 @@ class CreatePlanningTaskTagsTable extends Migration
     public function up()
     {
         Schema::create('planning_task_tags', function (Blueprint $table) {
-            $table->foreignId('planning_task_id')->constrained();
-            $table->foreignId('tag_id')->constrained();
+            $table->foreignId('planning_task_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
         });
     }
 

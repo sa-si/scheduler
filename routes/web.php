@@ -37,12 +37,16 @@ Route::middleware('auth')->group(function () {
     });
     Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');
     Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
-    Route::get('/planning-task-update', function () {
-        return view('planning-task-update');
-    });
-    Route::get('/execution-task-update', function () {
-        return view('execution-task-update');
-    });
+    Route::get('/planning-task-update/{id}', [PlanningTaskController::class, 'edit'])->name('p-task.edit');
+    Route::post('/planning-task-update/{id}', [PlanningTaskController::class, 'update'])->name('p-task.update');
+    Route::get('/planning-task-destroy/{id}', [PlanningTaskController::class, 'destroy'])->name('p-task.destroy');
+
+    Route::get('/execution-task-input', [ExecutionTaskController::class, 'create'])->name('e-task.create');
+    Route::post('/execution-task-input', [ExecutionTaskController::class, 'store'])->name('e-task.store');
+    Route::get('/execution-task-update/{id}', [ExecutionTaskController::class, 'edit'])->name('e-task.edit');
+    Route::post('/execution-task-update/{id}', [ExecutionTaskController::class, 'update'])->name('e-task.update');
+    Route::get('/execution-task-destroy/{id}', [ExecutionTaskController::class, 'destroy'])->name('e-task.destroy');
+
     Route::get('/trash-can', function () {
         return view('trash-can');
     });

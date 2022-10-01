@@ -45,10 +45,11 @@
                                 <label for="date_check" class="check-day">1</label>
                             </td>
                             <td class="monthly-task">
-                            <input type="text">
+                            <input type="checkbox" name="dates[]" value="2022-10-01">
                             <p>1</p>
                             </td>
                             <td class="monthly-task">
+                                <input type="checkbox" name="dates[]" value="2022-10-02">
                             <p>1</p>
                             </td>
                             <td class="monthly-task">
@@ -164,7 +165,7 @@
     <input type="checkbox" name="tags[]" value="1">
     <input type="checkbox" name="tags[]" value="12">
     <input type="checkbox" name="tags[]" value="14">
-    <input type="checkbox" name="tags[]" value="4">
+    <input type="checkbox" name="tags[]" value="16">
     <input type="text" name="new_tag" value="" placeholder="タグ名を入力">
     <br><br>
     <button>キャンセル</button>
