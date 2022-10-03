@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PlanningTaskController;
+use App\Http\Controllers\ExecutionTaskController;
 
 /*
 |--------------------------------------------------------------------------

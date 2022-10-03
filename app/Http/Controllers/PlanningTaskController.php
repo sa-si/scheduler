@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class PlanningTaskController extends Controller
 {
     public function create() {
+        $tags = Tag::where('user_id', Auth::id())->get();
         return view('planning-task-input');
     }
 

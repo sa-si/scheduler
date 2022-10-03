@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Auth;
 class ExecutionTaskController extends Controller
 {
     public function create() {
-        return view('execution-task-input');
+        $tags = Tag::where('user_id', Auth::id())->get();
+        return view('execution-task-input', compact('tags'));
     }
 
     public function store(Request $request) {
@@ -58,14 +59,14 @@ class ExecutionTaskController extends Controller
                 if ((!empty($request->new_tag) || $request->new_tag === '0') && !$tag_exists_if_get_id) {
                     $tag = Tag::create(['user_id' => Auth::id(), 'name' => $request->new_tag]);
                     $tag_id = $tag->id;
-                    ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_id]);
+                    ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_id]);
                 } elseif ($tag_exists_if_get_id && !in_array($tag_exists_if_get_id, $request->tags ?? [])) {
-                    ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
+                    ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
                 }
 
                 if (!empty($request->tags[0])){
                     foreach($request->tags as $tag){
-                        ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag]);
+                        ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag]);
                     }
                 }
             } elseif ($request->date_time === 'multi_day') {
@@ -82,16 +83,16 @@ class ExecutionTaskController extends Controller
                 if ((!empty($posts['new_tag']) || $posts['new_tag'] === '0') && !$tag_exists_if_get_id) {
                     $tag = Tag::create(['user_id' => Auth::id(), 'name' => $posts['new_tag']]);
                     $tag_id = $tag->id;
-                    ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_id]);
+                    ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_id]);
                 } elseif ($tag_exists_if_get_id && !in_array($tag_exists_if_get_id, $posts['tags'] ?? [])) {
                     $new_tag_existing = true;
-                    ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
+                    ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
                 }
 
                 if (!empty($posts['tags'][0])){
                     $has_tags = true;
                     foreach($posts['tags'] as $tag){
-                        ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag]);
+                        ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag]);
                     }
                 }
 
@@ -104,21 +105,21 @@ class ExecutionTaskController extends Controller
                     $task->id = $task->id;
 
                     if ($tag_id) {
-                        ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_id]);
+                        ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_id]);
                     } elseif ($new_tag_existing) {
-                        ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
+                        ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
                     }
 
                     if ($has_tags){
                         foreach($posts['tags'] as $tag){
-                            ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag]);
+                            ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag]);
                         }
                     }
                 }
             }
         });
 
-        return view('Execution-task-input');
+        return view('execution-task-input');
 
     }
 
@@ -129,13 +130,13 @@ class ExecutionTaskController extends Controller
         $registered_project_id = $registered_project->id ?? null;
         $projects = Project::where('user_id', Auth::id())->where('id', '<>', $registered_project_id)->get();
         $tags = Tag::where('user_id', Auth::id())->get();
-        $task_tags = ExecutionTaskTag::where('Execution_task_id', $task->id)->get()->toArray();
+        $task_tags = ExecutionTaskTag::where('execution_task_id', $task->id)->get()->toArray();
         $associated_tags = [];
         foreach($task_tags as $tag){
             array_push($associated_tags, $tag['tag_id']);
         }
 
-        return view('Execution-task-update', compact('task', 'registered_project', 'projects', 'tags', 'associated_tags'));
+        return view('execution-task-update', compact('task', 'registered_project', 'projects', 'tags', 'associated_tags'));
     }
 
     public function update(Request $request, $id)
@@ -167,22 +168,22 @@ class ExecutionTaskController extends Controller
             if ( $request->date_time === 'one_day' ) {
                 $task->update(['user_id' => Auth::id(), 'project_id' => $request->project ?? null, 'name' => $request->name , 'date' => $request->date, 'start_time' => $request->one_day_start_time, 'end_time' => $request->one_day_end_time, 'description' => $request->description]);
 
-                $Execution_task_tags = ExecutionTaskTag::where('Execution_task_id', $task->id)->get()->toArray();
+                $execution_task_tags = ExecutionTaskTag::where('execution_task_id', $task->id)->get()->toArray();
 
-                foreach ($Execution_task_tags as $task_tag) {
+                foreach ($execution_task_tags as $task_tag) {
                     // 過去に登録したタスクタグの組み合わせが、現在チェックが外されていれば
                     if (!in_array($task_tag['tag_id'], $request->tags ?? [])) {
                         //消す
-                        ExecutionTaskTag::where('Execution_task_id', $task->id)->where('tag_id', $task_tag['tag_id'])->delete();
+                        ExecutionTaskTag::where('execution_task_id', $task->id)->where('tag_id', $task_tag['tag_id'])->delete();
                     }
                 }
                 // チェックされたタグが、タスクタグテーブルにない場合、タスクタグテーブルに保存
                 if (!empty($request->tags[0])){
                     foreach($request->tags as $tag){
-                        if (!in_array($tag, array_column($Execution_task_tags, 'tag_id'))) {
+                        if (!in_array($tag, array_column($execution_task_tags, 'tag_id'))) {
                             //登録
                             // dd($task->id, $tag);
-                            ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag]);
+                            ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag]);
                         }
                     }
                 }
@@ -194,13 +195,13 @@ class ExecutionTaskController extends Controller
                 if ((!empty($request->new_tag) || $request->new_tag === '0') && !$tag_exists_if_get_id) {
                     $tag = Tag::create(['user_id' => Auth::id(), 'name' => $request->new_tag]);
                     $tag_id = $tag->id;
-                    ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_id]);
+                    ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_id]);
                     // $request->new_tagがDBにあって、チェックはされていないとき
                 } elseif ($tag_exists_if_get_id && !in_array($tag_exists_if_get_id, $request->tags ?? [])) {
                     // タスクタグテーブルにはあるかもしれない
-                    $task_tag_exists_if_get_id = ExecutionTaskTag::where('Execution_task_id', $task->id)->where('tag_id',  $tag_exists_if_get_id)->exists() ? ExecutionTaskTag::where('Execution_task_id', $task->id)->where('tag_id',  $tag_exists_if_get_id)->first()['id']: false;
+                    $task_tag_exists_if_get_id = ExecutionTaskTag::where('execution_task_id', $task->id)->where('tag_id',  $tag_exists_if_get_id)->exists() ? ExecutionTaskTag::where('execution_task_id', $task->id)->where('tag_id',  $tag_exists_if_get_id)->first()['id']: false;
                     if ($task_tag_exists_if_get_id) {
-                        ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $task_tag_exists_if_get_id]);
+                        ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $task_tag_exists_if_get_id]);
                     }
                 }
                 // /課題
@@ -218,16 +219,16 @@ class ExecutionTaskController extends Controller
                 // if ((!empty($posts['new_tag']) || $posts['new_tag'] === '0') && !$tag_exists_if_get_id) {
                 //     $tag = Tag::create(['user_id' => Auth::id(), 'name' => $posts['new_tag']]);
                 //     $tag_id = $tag->id;
-                //     ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_id]);
+                //     ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_id]);
                 // } elseif ($tag_exists_if_get_id && !in_array($tag_exists_if_get_id, $posts['tags'] ?? [])) {
                 //     $new_tag_existing = true;
-                //     ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
+                //     ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
                 // }
 
                 // if (!empty($posts['tags'][0])){
                 //     $has_tags = true;
                 //     foreach($posts['tags'] as $tag){
-                //         ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag]);
+                //         ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag]);
                 //     }
                 // }
 
@@ -240,21 +241,21 @@ class ExecutionTaskController extends Controller
                 //     $task->id = $task->id;
 
                 //     if ($tag_id) {
-                //         ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_id]);
+                //         ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_id]);
                 //     } elseif ($new_tag_existing) {
-                //         ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
+                //         ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
                 //     }
 
                 //     if ($has_tags){
                 //         foreach($posts['tags'] as $tag){
-                //             ExecutionTaskTag::insert(['Execution_task_id' => $task->id, 'tag_id' => $tag]);
+                //             ExecutionTaskTag::insert(['execution_task_id' => $task->id, 'tag_id' => $tag]);
                 //         }
                 //     }
                 // }
             }
         });
 
-        return redirect()->route('p-task.update', ['id' => $id ]);
+        return redirect()->route('e-task.update', ['id' => $id ]);
     }
 
     public function destroy($id)
