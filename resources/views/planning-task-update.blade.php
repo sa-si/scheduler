@@ -170,6 +170,7 @@
     @endforeach
     <input type="text" name="new_tag" value="" placeholder="タグ名を入力">
     <br><br>
+    <button type="button" onclick="history.back()">戻る</button>
     <a href="{{ route('p-task.destroy', ['id' => $task->id ])}}">削除</a>
     <button>キャンセル</button>
     <button type="submit">登録</button>

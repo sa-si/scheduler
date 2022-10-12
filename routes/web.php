@@ -9,6 +9,8 @@ use App\Http\Controllers\Calendar\CalendarDayController;
 use App\Http\Controllers\Calendar\CalendarWeekController;
 use App\Http\Controllers\Calendar\CalendarMonthController;
 use App\Http\Controllers\Calendar\CalendarYearController;
+use App\Http\Controllers\AnalysisController;
+use App\Http\Controllers\TrashCanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,16 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/execution-task-update/{id}', [ExecutionTaskController::class, 'edit'])->name('e-task.edit');
     Route::post('/execution-task-update/{id}', [ExecutionTaskController::class, 'update'])->name('e-task.update');
     Route::get('/execution-task-destroy/{id}', [ExecutionTaskController::class, 'destroy'])->name('e-task.destroy');
-
-    Route::get('/trash-can', function () {
-        return view('trash-can');
-    });
-    Route::get('/analysis', function () {
-        return view('analysis');
-    });
-    Route::get('/profile', function () {
-        return view('profile');
-    });
+    Route::get('/analysis', [AnalysisController::class, 'index'])->name('analysis');
+    Route::get('/trash-can', [TrashCanController::class, 'index'])->name('trash-can');
     Route::get('/profile', [HomeController::class, 'edit'])->name('user.edit');
     Route::post('/profile', [HomeController::class, 'update'])->name('user.update');
 });

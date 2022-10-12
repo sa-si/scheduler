@@ -51,28 +51,28 @@ class CalendarView {
                     $html[] = "<td class='" . $start_time . "'>";
 
                     if (isset($tasks[$day][$start_time])) {
-                        $html[] = '<p>' . $tasks[$day][$start_time]['name'] . '</p>';
+                        $html[] = '<p><a href="' . route('p-task.edit', ['id' => $tasks[$day][$start_time]['id']])  . '">' . $tasks[$day][$start_time]['name'] . '</a></p>';
                     }
 
                     $after_15_min_obj = $start_time_obj->addMinutes(self::AFTER_15_MIN_NUM);
                     $after_15_min = $after_15_min_obj->format('H:i');
 
                     if (isset($tasks[$day][$after_15_min])) {
-                        $html[] = '<p>' . $tasks[$day][$after_15_min]['name'] . '</p>';
+                        $html[] =  '<p><a href="' . route('p-task.edit', ['id' => $tasks[$day][$after_15_min]['id']])  . '">' . $tasks[$day][$after_15_min]['name'] . '</a></p>';
                     }
 
                     $after_30_min_obj = $start_time_obj->addMinutes(self::AFTER_30_MIN_NUM);
                     $after_30_min = $after_30_min_obj->format('H:i');
 
                     if (isset($tasks[$day][$after_30_min])) {
-                        $html[] = '<p>' . $tasks[$day][$after_30_min]['name'] . '</p>';
+                        $html[] =  '<p><a href="' . route('p-task.edit', ['id' => $tasks[$day][$after_30_min]['id']])  . '">' . $tasks[$day][$after_30_min]['name'] . '</a></p>';
                     }
 
                     $after_45_min_obj = $start_time_obj->addMinutes(self::AFTER_45_MIN_NUM);
                     $after_45_min = $after_45_min_obj->format('H:i');
 
                     if (isset($tasks[$day][$after_45_min])) {
-                        $html[] = '<p>' . $tasks[$day][$after_45_min]['name'] . '</p>';
+                        $html[] =  '<p><a href="' . route('p-task.edit', ['id' => $tasks[$day][$after_45_min]['id']])  . '">' . $tasks[$day][$after_45_min]['name'] . '</a></p>';
                     }
 
                     $html[] = '</td>';
@@ -85,6 +85,7 @@ class CalendarView {
             $html[] = '</table>';
         }  elseif (count($this->days) === 12) {
             foreach ($this->days as $days) {
+                $html[] = '<p>' . $days[0]->month . '月</p>';
                 $html[] = '<table>';
                 $html[] = '<thead>';
                 $html[] = '<tr>';
@@ -108,18 +109,6 @@ class CalendarView {
                     while ($start_day->lte($last_day)) {
                         $html[] = '<td class="">';
                         $html[] = '<p>' . $this->getDay($start_day) . '</p>';
-                        $key =  $start_day->format('Y-m-d');
-                        if (isset($tasks[$key])) {
-                            $display_tasks = array_slice($tasks[$key], 0, 2);
-                            foreach ($display_tasks as $task) {
-                                $html[] = '<p>' . $task['name'] . '</p>';
-                            }
-                            $other_tasks = array_slice($tasks[$key], 2);
-                            $other_tasks_length = count($other_tasks);
-                            if ($other_tasks_length !== 0){
-                                $html[] = '<p>他' . $other_tasks_length . 'つ</p>';
-                            }
-                        }
                         $html[] = '</td>';
                         $start_day = $start_day->addDay();
                     }
@@ -157,7 +146,8 @@ class CalendarView {
                     if (isset($tasks[$key])) {
                         $display_tasks = array_slice($tasks[$key], 0, 2);
                         foreach ($display_tasks as $task) {
-                            $html[] = '<p>' . $task['name'] . '</p>';
+                            $html[] = '<p><a href="' . route('p-task.edit', ['id' => $task['id']])  . '">' . $task['name'] . '</a></p>';
+
                         }
                         $other_tasks = array_slice($tasks[$key], 2);
                         $other_tasks_length = count($other_tasks);
