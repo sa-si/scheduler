@@ -5,6 +5,10 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PlanningTaskController;
 use App\Http\Controllers\ExecutionTaskController;
+use App\Http\Controllers\Calendar\CalendarDayController;
+use App\Http\Controllers\Calendar\CalendarWeekController;
+use App\Http\Controllers\Calendar\CalendarMonthController;
+use App\Http\Controllers\Calendar\CalendarYearController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,16 +30,13 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'home'])->name('home');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('index');
-    Route::get('/weekly-calendar', function () {
-        return view('weekly-calendar');
-    });
-    Route::get('/monthly-calendar', function () {
-        return view('monthly-calendar');
-    });
-    Route::get('/year-calendar', function () {
-        return view('year-calendar');
-    });
+    // Route::get('/', [CalendarMonthController::class, 'index'])->name('month');
+    Route::get('/day/{year}/{month}/{day}', [CalendarDayController::class, 'index'])->name('day');
+    Route::get('/week/{year}/{month}/{day}', [CalendarWeekController::class, 'index'])->name('week');
+    Route::get('/month/{year}/{month}/{day}', [CalendarMonthController::class, 'index'])->name('month');
+    Route::get('/year/{year}/{month}/{day}', [CalendarYearController::class, 'index'])->name('year');
+    Route::redirect('/', '/month');
+
     Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');
     Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
     Route::get('/planning-task-update/{id}', [PlanningTaskController::class, 'edit'])->name('p-task.edit');
