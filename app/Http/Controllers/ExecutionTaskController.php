@@ -263,7 +263,7 @@ class ExecutionTaskController extends Controller
         ExecutionTask::findOrFail($id)->delete();
 
         return redirect()
-        ->route('index')
+        ->route('home')
         ->with(['message' => 'タスクを削除しました。',
         'status' => 'alert']);
     }

@@ -1,12 +1,16 @@
 @extends('layouts.app')
 
+@section('javascript')
+<script src="/js/index.js"></script>
+@endsection
 @section('content')
-<form action="" method="POST">
+<form action="{{ route('trash-can') }}" method="POST">
+  @csrf
   {{-- 復元・・・deleted_atを削除
        削除・・・物理削除 --}}
-    <button>一括チェック</button>
-    <button>復元</button>
-    <button>削除</button>
+    <input type="checkbox" id="js_batch-check-button">一括チェック
+    <button type="submit" name="restore" value="1">復元</button>
+    <button type="submit" name="destroy" value="1">削除</button>
     <table>
       <thead>
         <tr>
@@ -18,33 +22,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>
-          <input type="checkbox" name="" value="1">
-          </td>
-          <td>掃除</td>
-          <td>2022/10/02(日)</td>
-          <td>2022/11/7(月)</td>
-          <td>計画</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
+      @if (count($tasks) === 0)
+          <tr><td>削除したタスクがありません。</td></tr>
+      @else
+          @foreach ($tasks as $task)
+              <tr>
+                  <td><input type="checkbox" name="{{ $task->type }}[]" value="{{ $task->id }}" class="js_batch-check-target"></td>
+                  <td>{{ $task->name }}</td>
+                  <td>{{ substr($task->created_at, 0, 10) }}</td>
+                  <td>{{ substr($task->deleted_at, 0 , 10) }}</td>
+                  <td>{{ $task->type === 'plans' ? '計画' : '実績' }}</td>
+              </tr>
+          @endforeach
+      @endif
       </tbody>
     </table>
 </form>

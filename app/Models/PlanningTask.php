@@ -8,10 +8,11 @@ use App\Models\Project;
 use App\Models\Tag;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PlanningTask extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = ['user_id', 'project_id', 'name', 'date', 'start_time', 'end_time', 'description'];
 

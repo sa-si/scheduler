@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/execution-task-destroy/{id}', [ExecutionTaskController::class, 'destroy'])->name('e-task.destroy');
     Route::get('/analysis', [AnalysisController::class, 'index'])->name('analysis');
     Route::get('/trash-can', [TrashCanController::class, 'index'])->name('trash-can');
+    Route::post('/trash-can', [TrashCanController::class, 'update'])->name('trash-can.update');
     Route::get('/profile', [HomeController::class, 'edit'])->name('user.edit');
     Route::post('/profile', [HomeController::class, 'update'])->name('user.update');
 });

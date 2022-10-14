@@ -114,3 +114,31 @@ function toggleEnableAndDisable(enable = [], disable = []) {
         });
     }
 }
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+        var batchBtn = document.getElementById("js_batch-check-button");
+        var targets = document.getElementsByClassName("js_batch-check-target");
+
+        batchBtn.addEventListener("change", function () {
+            //チェックされているか
+            if (batchBtn.checked) {
+                //全て選択
+                for (let i in targets) {
+                    if (targets.hasOwnProperty(i)) {
+                        targets[i].checked = true;
+                    }
+                }
+            } else {
+                //全て解除
+                for (let i in targets) {
+                    if (targets.hasOwnProperty(i)) {
+                        targets[i].checked = false;
+                    }
+                }
+            }
+        });
+    },
+    false
+);
