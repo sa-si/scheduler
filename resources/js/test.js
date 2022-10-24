@@ -280,6 +280,7 @@ for (var i = 0; i < target.length; i++) {
         // console.log(e.target);
         var date = this.getAttribute("data-date");
         var time = this.getAttribute("data-time");
+        // console.log(date, time, e.target);
         getForm("js_form-display", date, time, e.target);
     });
 }

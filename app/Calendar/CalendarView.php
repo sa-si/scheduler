@@ -24,7 +24,7 @@ class CalendarView {
 
     public function render() {
         $html = [];
-
+        // 日・週カレンダービュー
         if (count($this->days) === 1 || count($this->days) === 7) {
             $html[] = '<table>';
             $html[] = '<thead>';
@@ -61,7 +61,7 @@ class CalendarView {
 
                     $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $after_15_min .'">';
                     if (isset($tasks[$day][$after_15_min])) {
-                        $html[] =  '<p>' . $tasks[$day][$after_15_min]['name'] . '</p>';
+                        $html[] =  '<p id="task_name">' . $tasks[$day][$after_15_min]['name'] . '</p>';
                     }
                     $html[] = "</div>";
 
@@ -70,7 +70,7 @@ class CalendarView {
 
                     $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $after_30_min .'">';
                     if (isset($tasks[$day][$after_30_min])) {
-                        $html[] =  '<p>' . $tasks[$day][$after_30_min]['name'] . '</p>';
+                        $html[] =  '<p id="task_name">' . $tasks[$day][$after_30_min]['name'] . '</p>';
                     }
                     $html[] = "</div>";
 
@@ -79,7 +79,7 @@ class CalendarView {
 
                     $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $after_45_min .'">';
                     if (isset($tasks[$day][$after_45_min])) {
-                        $html[] =  '<p>' . $tasks[$day][$after_45_min]['name'] . '</p>';
+                        $html[] =  '<p id="task_name">' . $tasks[$day][$after_45_min]['name'] . '</p>';
                     }
                     $html[] = "</div>";
 
@@ -92,6 +92,7 @@ class CalendarView {
             $html[] = '</tbody>';
             $html[] = '</table>';
         }  elseif (count($this->days) === 12) {
+            // 年カレンダービュー
             foreach ($this->days as $days) {
                 $html[] = '<p>' . $days[0]->month . '月</p>';
                 $html[] = '<table>';
@@ -127,6 +128,7 @@ class CalendarView {
                 $html[] = '</table>';
             }
         } else {
+            // 月カレンダービュー
             $html[] = '<table>';
             $html[] = '<thead>';
             $html[] = '<tr>';

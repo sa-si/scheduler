@@ -19,7 +19,7 @@ class PlanningTaskController extends Controller
     //     return view('planning-task-input');
     // }
     public function form(Request $request) {
-       if (isset($request->id)) {
+       if (isset($request->task_id)) {
            $this->update($request);
        } else {
            $this->store($request);
@@ -33,10 +33,6 @@ class PlanningTaskController extends Controller
             'date' => 'sometimes|required|string',
             'one_day_start_time' => 'sometimes|required|string',
             'one_day_end_time' => 'sometimes|required|string',
-            // 'dates' => 'sometimes|required|array',
-            // 'dates.*' => 'sometimes|required|date',
-            // 'multi_day_start_time' => 'sometimes|required|string',
-            // 'multi_day_end_time' => 'sometimes|required|string',
             'project' => 'nullable|string',
         ]);
 
@@ -121,8 +117,6 @@ class PlanningTaskController extends Controller
         //     //     }
         //     // }
         });
-
-        return $request->name;
     }
 
     // public function edit($id)
@@ -149,14 +143,10 @@ class PlanningTaskController extends Controller
             'date' => 'sometimes|required|string',
             'one_day_start_time' => 'sometimes|required|string',
             'one_day_end_time' => 'sometimes|required|string',
-            // 'dates' => 'sometimes|required|array',
-            // 'dates.*' => 'sometimes|required|date',
-            // 'multi_day_start_time' => 'sometimes|required|string',
-            // 'multi_day_end_time' => 'sometimes|required|string',
             'project' => 'nullable|string',
         ]);
 
-        $task = PlanningTask::find($request->id);
+        $task = PlanningTask::find($request->task_id);
 
         DB::transaction(function () use($request, $task) {
             if ( !empty($request->project) || $request->project === '0' ) {

@@ -20,12 +20,13 @@ class CalendarDayController extends Controller
         $days = [$carbon];
 
         $calendar = new CalendarView($carbon, $days);
+        $form_path = url(route('form'));
 
-        return view('calendar.day', compact('calendar'));
+        return view('calendar.day', compact('calendar', 'form_path'));
     }
 
     public function form(Request $request) {
-        $task = PlanningTask::where('date', $request->date)->where('start_time', $request->time)->get()->first() ?? '';
+        $task = PlanningTask::where('date', $request->date)->where('start_time', $request->time)->whereNull('deleted_at')->get()->first() ?? '';
         if ($task) {
             $registered_project = $task->project;
             $registered_project_id = $registered_project->id ?? null;
