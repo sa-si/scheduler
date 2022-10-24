@@ -2,7 +2,7 @@
     {{-- <input type="hidden" value="{{ $id }}" id="modal-id"> --}}
     <form action="{{ route('task') }}" method="POST" name="task">
         @csrf
-        <input type="hidden" name="id" value="{{ $task->id ? $task->id : '' }}">
+        <input type="hidden" name="task_id" value="{{ $task->id ? $task->id : '' }}">
         <div class="modal__overlay" tabindex="-1" id="testes" data-close-confirm="close-confirm">
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
                 <header class="modal__header">
@@ -65,10 +65,7 @@
                     @endforeach
                     <input type="text" name="new_tag" value="" placeholder="タグ名を入力">
                     <br><br>
-                    {{-- <button type="button" onclick="history.back()">戻る</button> --}}
-                    <a href="{{ route('p-task.destroy', ['id' => $task->id ])}}">削除</a>
-                    {{-- <button>キャンセル</button>
-                    <button type="submit">登録</button> --}}
+                    <a href="{{ route('task.destroy', ['id' => $task->id ])}}" id="task_destroy">削除</a>
                     <button>実績タスクとしてコピー</button>
                 </main>
                 <footer class="modal__footer">

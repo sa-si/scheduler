@@ -165,11 +165,21 @@ function submitForm() {
     xhr.addEventListener("readystatechange", () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
             MicroModal.close("modal-1");
-            // console.log(xhr.responseText);
         }
     });
 }
-// window.globalFunctions.submitForm = submitForm;
+
+function deleteTask(deleteUrl, target) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", deleteUrl, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            MicroModal.close("modal-1", {});
+            target.parentNode.removeChild(target);
+        }
+    };
+    xhr.send(null);
+}
 
 function getForm(replace, date, time, target) {
     var path = document.getElementById("form-path").value;
@@ -183,8 +193,7 @@ function getForm(replace, date, time, target) {
             var data = xhr.responseText;
             var elem = document.getElementById(replace);
             elem.innerHTML = data;
-            // var modalId = document.getElementById("modal-id").value;
-            // MicroModal.show("modal-" + modalId);
+
             MicroModal.show("modal-1", {
                 disableFocus: true,
                 onShow: function (modal) {
@@ -197,38 +206,26 @@ function getForm(replace, date, time, target) {
                             }
                         });
                     }
-                    // console.log(oldInputs);
+
                     let selects = modal.getElementsByTagName("select");
-                    // console.log(
-                    //     selects.getElementsByTagName("option")[0].value
-                    // );
-                    // let oldSelects = [];
+
                     for (var num0 = 0; num0 < selects.length; num0++) {
-                        // oldSelects[num0] = [];
                         selects[num0].addEventListener("change", () => {
                             if (!modal.classList.contains("value-change")) {
                                 modal.classList.add("value-change");
-                                // alert("クラス追加！");
                             }
                         });
                     }
 
                     let textarea = modal.getElementsByTagName("textarea");
-                    // console.log(textarea[0].value);
-                    // let oldTextarea = [];
+
                     for (var num0 = 0; num0 < textarea.length; num0++) {
-                        // oldTextarea[num0] = textarea[num0].value;
                         textarea[num0].addEventListener("change", () => {
                             if (!modal.classList.contains("value-change")) {
                                 modal.classList.add("value-change");
-                                // alert("クラス追加！");
                             }
                         });
                     }
-
-                    // let closes = modal.querySelectorAll(
-                    //     "[data-close-confirm='close-confirm']"
-                    // );
 
                     modal.addEventListener("click", function (e) {
                         if (e.target.hasAttribute("data-close-confirm")) {
@@ -258,112 +255,17 @@ function getForm(replace, date, time, target) {
                             "</p>";
                     });
 
-                    // console.log(inputs, selects, textarea);
-
-                    // return {
-                    //     taskForm: taskForm,
-                    //     inputs: inputs,
-                    //     oldInputs: oldInputs,
-                    //     selects: selects,
-                    //     oldSelects: oldSelects,
-                    //     textarea: textarea,
-                    //     oldTextarea: oldTextarea,
-                    // var closes = document.querySelectorAll(
-                    //     "[data-micromodal-close]"
-                    // );
-                    // closes.forEach((element) => {
-                    //     element.addEventListener("change", () => {
-                    //         "modal-1".setAttribute('class', 'tuika');
-                    //     });
-                    // });
-                    // };
-                    return modal;
-                },
-                onClose: function (modal) {
-                    // if (modal.classList.contains("value-change")) {
-                    //     MicroModal.show("modal-2", {});
-                    //     closeModal.addEventListener("click", function () {
-                    //         MicroModal.close("modal-2", {
-                    //             onClose: (modal) => {
-                    //                 MicroModal.show("modal-3", {});
-                    //             },
-                    //         });
-                    //     });
-                    //     // const result =
-                    //     //     confirm("保存されていない変更を破棄しますか？");
-                    //     // if (result) {
-                    //     //     // console.log("OKがクリックされました");
-                    //     // } else {
-                    //     //     let tes = modal.querySelector(
-                    //     //         "div[class='modal__overlay']"
-                    //     //     );
-                    //     //     tes.removeAttribute("data-micromodal-close");
-                    //     //     // modal.classList.add("is-open2");
-                    //     //     // modal.setAttribute("aria-hidden", "false");
-                    //     // }
-                    // }
-                    // var formObj = MicroModal;
-                    // console.log(formObj.onShow());
-                    // let newInputs = taskForm.getElementsByTagName("input");
-                    // let newSelects = taskForm.getElementsByTagName("select");
-                    // let newTextarea = taskForm.getElementsByTagName("textarea");
-                    // for (var num = 0; num < inputs.length; num++) {
-                    //     if (oldInputs[num] !== newInputs[num].value) {
-                    //         // console.log(
-                    //         //     "input変更あり",
-                    //         //     oldInputs[num],
-                    //         //     newInputs[num].value
-                    //         // );
-                    //         confirm("input変更あり 変更を保存しますか？");
-                    //     } else {
-                    //         // console.log(
-                    //         //     "input変更なし",
-                    //         //     oldInputs[num],
-                    //         //     newInputs[num].value
-                    //         // );
-                    //     }
-                    // }
-                    // for (var num = 0; num < selects.length; num++) {
-                    //     if (oldSelects[num] !== newSelects[num].value) {
-                    //         // console.log(
-                    //         //     "select変更あり",
-                    //         //     oldSelects[num],
-                    //         //     newSelects[num].value
-                    //         // );
-                    //         confirm("select変更あり 変更を保存しますか？");
-                    //     } else {
-                    //         // console.log(
-                    //         //     "select変更なし",
-                    //         //     oldSelects[num],
-                    //         //     newSelects[num].value
-                    //         // );
-                    //     }
-                    // }
-                    // for (var num = 0; num < textarea.length; num++) {
-                    //     if (oldTextarea[num] !== newTextarea[num].value) {
-                    //         // console.log(
-                    //         //     "textarea変更あり",
-                    //         //     oldTextarea[num],
-                    //         //     newTextarea[num].value
-                    //         // );
-                    //         confirm("textarea変更あり 変更を保存しますか？");
-                    //     } else {
-                    //         // console.log(
-                    //         //     "textarea変更なし",
-                    //         //     oldTextarea[num],
-                    //         //     newTextarea[num].value
-                    //         // );
-                    //     }
-                    // }
+                    if (modal.querySelector("input[name='task_id']")) {
+                        task_destroy.addEventListener("click", function (e) {
+                            e.preventDefault();
+                            const deleteUrl = e.target.getAttribute("href");
+                            // console.log(1 * 1);
+                            deleteTask(deleteUrl, target);
+                        });
+                    }
                 },
             });
 
-            // console.log(oldInputs, oldSelects, oldTextarea);
-            // var close = taskForm.querySelector("button[data-micromodal-close]");
-            // // console.log(close[0]);
-            // close.addEventListener("click", function () {
-            //     // MicroModal.close("modal-1");
-            // });
             return data;
         }
     };
@@ -375,10 +277,10 @@ var target = document.getElementsByClassName("js_form");
 
 for (var i = 0; i < target.length; i++) {
     target[i].addEventListener("click", function (e) {
+        // console.log(e.target);
         var date = this.getAttribute("data-date");
         var time = this.getAttribute("data-time");
         getForm("js_form-display", date, time, e.target);
-        // console.log(obj.closeModal);
     });
 }
 

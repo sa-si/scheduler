@@ -264,9 +264,9 @@ class PlanningTaskController extends Controller
     {
         PlanningTask::findOrFail($id)->delete();
 
-        return redirect()
-        ->route('index')
-        ->with(['message' => 'タスクを削除しました。',
-        'status' => 'alert']);
+        // return redirect()
+        // ->route('index')
+        // ->with(['message' => 'タスクを削除しました。',
+        // 'status' => 'alert']);
     }
 }

@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/task', [PlanningTaskController::class, 'form'])->name('task');
     // Route::get('/planning-task-update/{id}', [PlanningTaskController::class, 'edit'])->name('p-task.edit');
     Route::post('/planning-task-update', [PlanningTaskController::class, 'update'])->name('p-task.update');
-    Route::get('/planning-task-destroy/{id}', [PlanningTaskController::class, 'destroy'])->name('p-task.destroy');
+    Route::get('/task-destroy/{id}', [PlanningTaskController::class, 'destroy'])->name('task.destroy');
 
     Route::get('/execution-task-input', [ExecutionTaskController::class, 'create'])->name('e-task.create');
     Route::post('/execution-task-input', [ExecutionTaskController::class, 'store'])->name('e-task.store');
