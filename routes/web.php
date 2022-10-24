@@ -23,26 +23,23 @@ use App\Http\Controllers\TrashCanController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'home'])->name('home');
 
 Route::middleware('auth')->group(function () {
-    // Route::get('/', [CalendarMonthController::class, 'index'])->name('month');
+    Route::get('/async-form', [CalendarDayController::class, 'form'])->name('form');
     Route::get('/day/{year}/{month}/{day}', [CalendarDayController::class, 'index'])->name('day');
     Route::get('/week/{year}/{month}/{day}', [CalendarWeekController::class, 'index'])->name('week');
     Route::get('/month/{year}/{month}/{day}', [CalendarMonthController::class, 'index'])->name('month');
     Route::get('/year/{year}/{month}/{day}', [CalendarYearController::class, 'index'])->name('year');
     Route::redirect('/', '/month');
 
-    Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');
-    Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
-    Route::get('/planning-task-update/{id}', [PlanningTaskController::class, 'edit'])->name('p-task.edit');
-    Route::post('/planning-task-update/{id}', [PlanningTaskController::class, 'update'])->name('p-task.update');
+    // Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');
+    // Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
+    Route::post('/task', [PlanningTaskController::class, 'form'])->name('task');
+    // Route::get('/planning-task-update/{id}', [PlanningTaskController::class, 'edit'])->name('p-task.edit');
+    Route::post('/planning-task-update', [PlanningTaskController::class, 'update'])->name('p-task.update');
     Route::get('/planning-task-destroy/{id}', [PlanningTaskController::class, 'destroy'])->name('p-task.destroy');
 
     Route::get('/execution-task-input', [ExecutionTaskController::class, 'create'])->name('e-task.create');

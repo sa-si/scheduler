@@ -1,7 +1,7 @@
-window._ = require('lodash');
+window._ = require("lodash");
 
 try {
-    require('bootstrap');
+    require("bootstrap");
 } catch (e) {}
 
 /**
@@ -10,10 +10,12 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = require('axios');
+window.axios = require("axios");
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
+import MicroModal from "micromodal"; // es6 module
+MicroModal.init({});
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

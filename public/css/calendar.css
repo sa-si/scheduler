@@ -39,3 +39,13 @@ tbody > tr:last-child th:after {
 .display-none:checked + .check-day {
   color: red;
 }
+
+.js_form {
+  background-color: pink;
+  height: 20px;
+  width: 40px;
+}
+
+.js_form:not(:last-child) {
+  border-bottom: 1px solid #000000;
+}

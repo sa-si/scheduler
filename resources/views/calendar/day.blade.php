@@ -1,8 +1,7 @@
 @extends('layouts.app')
+
 @section('content')
-<!-- day-table -->
-<form action="#" method="POST">
-    @csrf
-    {!! $calendar->render() !!}
-</form>
+<input type="hidden" value="{{ $form_path }}" id="form-path">
+<div id="js_form-display" class="form"></div>
+{!! $calendar->render() !!}
 @endsection

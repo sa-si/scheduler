@@ -22,7 +22,6 @@ class TrashCanController extends Controller
         if (isset($request->restore)) {
             DB::transaction(function () use($request) {
                 if (isset($request->plans)) {
-                    // dd(PlanningTask::whereIn('id', $request->plans));
                      PlanningTask::whereIn('id', $request->plans)->restore();
                 }
 

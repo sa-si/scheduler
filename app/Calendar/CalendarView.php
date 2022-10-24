@@ -48,34 +48,42 @@ class CalendarView {
                 foreach ($this->days as $day) {
                     $day = $day->format('Y-m-d');
 
-                    $html[] = "<td class='" . $start_time . "'>";
+                    $html[] = "<td>";
 
+                    $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $start_time .'">';
                     if (isset($tasks[$day][$start_time])) {
-                        $html[] = '<p><a href="' . route('p-task.edit', ['id' => $tasks[$day][$start_time]['id']])  . '">' . $tasks[$day][$start_time]['name'] . '</a></p>';
+                        $html[] = '<p>' . $tasks[$day][$start_time]['name'] . '</p>';
                     }
+                    $html[] = "</div>";
 
                     $after_15_min_obj = $start_time_obj->addMinutes(self::AFTER_15_MIN_NUM);
                     $after_15_min = $after_15_min_obj->format('H:i');
 
+                    $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $after_15_min .'">';
                     if (isset($tasks[$day][$after_15_min])) {
-                        $html[] =  '<p><a href="' . route('p-task.edit', ['id' => $tasks[$day][$after_15_min]['id']])  . '">' . $tasks[$day][$after_15_min]['name'] . '</a></p>';
+                        $html[] =  '<p>' . $tasks[$day][$after_15_min]['name'] . '</p>';
                     }
+                    $html[] = "</div>";
 
                     $after_30_min_obj = $start_time_obj->addMinutes(self::AFTER_30_MIN_NUM);
                     $after_30_min = $after_30_min_obj->format('H:i');
 
+                    $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $after_30_min .'">';
                     if (isset($tasks[$day][$after_30_min])) {
-                        $html[] =  '<p><a href="' . route('p-task.edit', ['id' => $tasks[$day][$after_30_min]['id']])  . '">' . $tasks[$day][$after_30_min]['name'] . '</a></p>';
+                        $html[] =  '<p>' . $tasks[$day][$after_30_min]['name'] . '</p>';
                     }
+                    $html[] = "</div>";
 
                     $after_45_min_obj = $start_time_obj->addMinutes(self::AFTER_45_MIN_NUM);
                     $after_45_min = $after_45_min_obj->format('H:i');
 
+                    $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $after_45_min .'">';
                     if (isset($tasks[$day][$after_45_min])) {
-                        $html[] =  '<p><a href="' . route('p-task.edit', ['id' => $tasks[$day][$after_45_min]['id']])  . '">' . $tasks[$day][$after_45_min]['name'] . '</a></p>';
+                        $html[] =  '<p>' . $tasks[$day][$after_45_min]['name'] . '</p>';
                     }
+                    $html[] = "</div>";
 
-                    $html[] = '</td>';
+                    $html[] = '</div>';
                 }
 
                 $html[] = '</tr>';

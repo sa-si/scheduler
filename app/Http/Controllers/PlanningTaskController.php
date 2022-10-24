@@ -14,30 +14,33 @@ use Illuminate\Support\Facades\Auth;
 
 class PlanningTaskController extends Controller
 {
-    public function create() {
-        $tags = Tag::where('user_id', Auth::id())->get();
-        return view('planning-task-input');
+    // public function create() {
+    //     $tags = Tag::where('user_id', Auth::id())->get();
+    //     return view('planning-task-input');
+    // }
+    public function form(Request $request) {
+       if (isset($request->id)) {
+           $this->update($request);
+       } else {
+           $this->store($request);
+       }
     }
 
     public function store(Request $request) {
-        // 課題：projectの値が0or1であることを保証する
-        // 課題２:date_timeの値が１つであることを保証する
-        // 課題２.5:date属性が配列でない場合、値は1つであることを保証する。
-        // Q.name属性が配列の場合のバリデ方法は？
-        // projectの同user_idの中でunique設定
         $request->validate([
             'name' => 'required|string|max:255',
             'description'  => 'required|string|max:5000',
-            'date' => 'sometimes|required|date',
+            'date' => 'sometimes|required|string',
             'one_day_start_time' => 'sometimes|required|string',
             'one_day_end_time' => 'sometimes|required|string',
-            'dates' => 'sometimes|required|array',
-            'dates.*' => 'sometimes|required|date',
-            'multi_day_start_time' => 'sometimes|required|string',
-            'multi_day_end_time' => 'sometimes|required|string',
+            // 'dates' => 'sometimes|required|array',
+            // 'dates.*' => 'sometimes|required|date',
+            // 'multi_day_start_time' => 'sometimes|required|string',
+            // 'multi_day_end_time' => 'sometimes|required|string',
             'project' => 'nullable|string',
         ]);
 
+        // PlanningTask::create(['user_id' => Auth::id(), 'project_id' => $project_id ?? null, 'name' => $request->name , 'date' => $request->date, 'start_time' => $request->one_day_start_time, 'end_time' => $request->one_day_end_time, 'description' => $request->description]);
         DB::transaction(function () use($request) {
             if ( !empty($request->project) || $request->project === '0' ) {
                 $projectExists = Project::where('user_id', Auth::id())->where('name', $request->project)->exists();
@@ -49,7 +52,7 @@ class PlanningTaskController extends Controller
                 }
             }
 
-            if ( $request->date_time === 'one_day' ) {
+        //     // if ( $request->date_time === 'one_day' ) {
                 $task = PlanningTask::create(['user_id' => Auth::id(), 'project_id' => $project_id ?? null, 'name' => $request->name , 'date' => $request->date, 'start_time' => $request->one_day_start_time, 'end_time' => $request->one_day_end_time, 'description' => $request->description]);
 
                 $task->id = $task->id;
@@ -69,92 +72,91 @@ class PlanningTaskController extends Controller
                         PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag]);
                     }
                 }
-            } elseif ($request->date_time === 'multi_day') {
-                $posts = $request->all();
-                $has_tags = false;
-                $new_tag_existing = false;
-                // dd($posts);
-                $task = PlanningTask::create(['user_id' => Auth::id(), 'project_id' => $project_id ?? null, 'name' => $posts['name'] , 'date' => $posts['dates'][0], 'start_time' => $posts['multi_day_start_time'], 'end_time' => $posts['multi_day_end_time'], 'description' => $posts['description']]);
+        //     // } elseif ($request->date_time === 'multi_day') {
+        //     //     $posts = $request->all();
+        //     //     $has_tags = false;
+        //     //     $new_tag_existing = false;
+        //     //     // dd($posts);
+        //     //     $task = PlanningTask::create(['user_id' => Auth::id(), 'project_id' => $project_id ?? null, 'name' => $posts['name'] , 'date' => $posts['dates'][0], 'start_time' => $posts['multi_day_start_time'], 'end_time' => $posts['multi_day_end_time'], 'description' => $posts['description']]);
 
-                $task->id = $task->id;
+        //     //     $task->id = $task->id;
 
-                $tag_exists_if_get_id = Tag::where('user_id', '=', Auth::id())->where('name', '=', $posts['new_tag'])->exists() ? Tag::where('user_id', '=', Auth::id())->where('name', '=', $posts['new_tag'])->first()['id']: false;
+        //     //     $tag_exists_if_get_id = Tag::where('user_id', '=', Auth::id())->where('name', '=', $posts['new_tag'])->exists() ? Tag::where('user_id', '=', Auth::id())->where('name', '=', $posts['new_tag'])->first()['id']: false;
 
-                if ((!empty($posts['new_tag']) || $posts['new_tag'] === '0') && !$tag_exists_if_get_id) {
-                    $tag = Tag::create(['user_id' => Auth::id(), 'name' => $posts['new_tag']]);
-                    $tag_id = $tag->id;
-                    PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_id]);
-                } elseif ($tag_exists_if_get_id && !in_array($tag_exists_if_get_id, $posts['tags'] ?? [])) {
-                    $new_tag_existing = true;
-                    PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
-                }
+        //     //     if ((!empty($posts['new_tag']) || $posts['new_tag'] === '0') && !$tag_exists_if_get_id) {
+        //     //         $tag = Tag::create(['user_id' => Auth::id(), 'name' => $posts['new_tag']]);
+        //     //         $tag_id = $tag->id;
+        //     //         PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_id]);
+        //     //     } elseif ($tag_exists_if_get_id && !in_array($tag_exists_if_get_id, $posts['tags'] ?? [])) {
+        //     //         $new_tag_existing = true;
+        //     //         PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
+        //     //     }
 
-                if (!empty($posts['tags'][0])){
-                    $has_tags = true;
-                    foreach($posts['tags'] as $tag){
-                        PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag]);
-                    }
-                }
+        //     //     if (!empty($posts['tags'][0])){
+        //     //         $has_tags = true;
+        //     //         foreach($posts['tags'] as $tag){
+        //     //             PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag]);
+        //     //         }
+        //     //     }
 
-                $dates = $posts['dates'];
-                array_shift($dates);
+        //     //     $dates = $posts['dates'];
+        //     //     array_shift($dates);
 
-                foreach ($dates as $date) {
-                    $task = PlanningTask::create(['user_id' => Auth::id(), 'project_id' => $project_id ?? null, 'name' => $posts['name'] , 'date' => $date, 'start_time' => $posts['multi_day_start_time'], 'end_time' => $posts['multi_day_end_time'], 'description' => $posts['description']]);
+        //     //     foreach ($dates as $date) {
+        //     //         $task = PlanningTask::create(['user_id' => Auth::id(), 'project_id' => $project_id ?? null, 'name' => $posts['name'] , 'date' => $date, 'start_time' => $posts['multi_day_start_time'], 'end_time' => $posts['multi_day_end_time'], 'description' => $posts['description']]);
 
-                    $task->id = $task->id;
+        //     //         $task->id = $task->id;
 
-                    if ($tag_id) {
-                        PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_id]);
-                    } elseif ($new_tag_existing) {
-                        PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
-                    }
+        //     //         if ($tag_id) {
+        //     //             PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_id]);
+        //     //         } elseif ($new_tag_existing) {
+        //     //             PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
+        //     //         }
 
-                    if ($has_tags){
-                        foreach($posts['tags'] as $tag){
-                            PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag]);
-                        }
-                    }
-                }
-            }
+        //     //         if ($has_tags){
+        //     //             foreach($posts['tags'] as $tag){
+        //     //                 PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag]);
+        //     //             }
+        //     //         }
+        //     //     }
+        //     // }
         });
 
-        return view('planning-task-input');
-
+        return $request->name;
     }
 
-    public function edit($id)
-    {
-        $task = PlanningTask::find($id);
-        $registered_project = $task->project;
-        $registered_project_id = $registered_project->id ?? null;
-        $projects = Project::where('user_id', Auth::id())->where('id', '<>', $registered_project_id)->get();
-        $tags = Tag::where('user_id', Auth::id())->get();
-        $task_tags = PlanningTaskTag::where('planning_task_id', $task->id)->get()->toArray();
-        $associated_tags = [];
-        foreach($task_tags as $tag){
-            array_push($associated_tags, $tag['tag_id']);
-        }
+    // public function edit($id)
+    // {
+    //     $task = PlanningTask::find($id);
+    //     $registered_project = $task->project;
+    //     $registered_project_id = $registered_project->id ?? null;
+    //     $projects = Project::where('user_id', Auth::id())->where('id', '<>', $registered_project_id)->get();
+    //     $tags = Tag::where('user_id', Auth::id())->get();
+    //     $task_tags = PlanningTaskTag::where('planning_task_id', $task->id)->get()->toArray();
+    //     $associated_tags = [];
+    //     foreach($task_tags as $tag){
+    //         array_push($associated_tags, $tag['tag_id']);
+    //     }
 
-        return view('planning-task-update', compact('task', 'registered_project', 'projects', 'tags', 'associated_tags'));
-    }
+    //     return view('planning-task-update', compact('task', 'registered_project', 'projects', 'tags', 'associated_tags'));
+    // }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'description'  => 'required|string|max:5000',
-            'date' => 'sometimes|required|date',
+            'date' => 'sometimes|required|string',
             'one_day_start_time' => 'sometimes|required|string',
             'one_day_end_time' => 'sometimes|required|string',
-            'dates' => 'sometimes|required|array',
-            'dates.*' => 'sometimes|required|date',
-            'multi_day_start_time' => 'sometimes|required|string',
-            'multi_day_end_time' => 'sometimes|required|string',
+            // 'dates' => 'sometimes|required|array',
+            // 'dates.*' => 'sometimes|required|date',
+            // 'multi_day_start_time' => 'sometimes|required|string',
+            // 'multi_day_end_time' => 'sometimes|required|string',
             'project' => 'nullable|string',
         ]);
 
-        $task = PlanningTask::find($id);
+        $task = PlanningTask::find($request->id);
 
         DB::transaction(function () use($request, $task) {
             if ( !empty($request->project) || $request->project === '0' ) {
@@ -165,7 +167,7 @@ class PlanningTaskController extends Controller
                 }
             }
 
-            if ( $request->date_time === 'one_day' ) {
+            // if ( $request->date_time === 'one_day' ) {
                 $task->update(['user_id' => Auth::id(), 'project_id' => $request->project ?? null, 'name' => $request->name , 'date' => $request->date, 'start_time' => $request->one_day_start_time, 'end_time' => $request->one_day_end_time, 'description' => $request->description]);
 
                 $planning_task_tags = PlanningTaskTag::where('planning_task_id', $task->id)->get()->toArray();
@@ -205,7 +207,7 @@ class PlanningTaskController extends Controller
                     }
                 }
                 // /課題
-            } elseif ($request->date_time === 'multi_day') {
+            // } elseif ($request->date_time === 'multi_day') {
                 // $posts = $request->all();
                 // $has_tags = false;
                 // $new_tag_existing = false;
@@ -252,10 +254,10 @@ class PlanningTaskController extends Controller
                 //         }
                 //     }
                 // }
-            }
+            // }
         });
 
-        return redirect()->route('p-task.update', ['id' => $id ]);
+        // return redirect()->route('p-task.update', ['id' => $id ]);
     }
 
     public function destroy($id)

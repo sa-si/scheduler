@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('javascript')
+{{-- @section('javascript')
 <script src="/js/index.js"></script>
-@endsection
+@endsection --}}
 @section('content')
 <form action="{{ route('e-task.update', ['id' => $task->id]) }}" method="POST">
     @csrf

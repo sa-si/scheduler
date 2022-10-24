@@ -22,7 +22,8 @@ class CalendarWeekController extends Controller
         }
 
         $calendar = new CalendarView($carbon, $days);
+        $form_path = url(route('form'));
 
-        return view('calendar.day', compact('calendar'));
+        return view('calendar.day', compact('calendar', 'form_path'));
     }
 }
