@@ -36,8 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/year/{year}/{month}/{day}', [CalendarYearController::class, 'index'])->name('year');
     Route::redirect('/', '/month');
 
-    // Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');
-    // Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
+    Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');
+    Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
     Route::post('/task', [PlanningTaskController::class, 'form'])->name('task');
     // Route::get('/planning-task-update/{id}', [PlanningTaskController::class, 'edit'])->name('p-task.edit');
     Route::post('/planning-task-update', [PlanningTaskController::class, 'update'])->name('p-task.update');

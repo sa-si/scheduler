@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Auth;
 
 class PlanningTaskController extends Controller
 {
-    // public function create() {
-    //     $tags = Tag::where('user_id', Auth::id())->get();
-    //     return view('planning-task-input');
-    // }
+    public function create() {
+        $tags = Tag::where('user_id', Auth::id())->get();
+        return view('planning-task-input');
+    }
 
     public function form(Request $request) {
        if (isset($request->task_id)) {
@@ -28,6 +28,7 @@ class PlanningTaskController extends Controller
     }
 
     public function store(Request $request) {
+        dd(getType($request->date));
         $request->validate([
             'name' => 'required|string|max:255',
             'description'  => 'required|string|max:5000',
