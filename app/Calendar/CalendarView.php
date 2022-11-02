@@ -8,6 +8,7 @@ class CalendarView {
 
     public $carbon;
     public $days;
+    public $tasks;
 
     const LAST_TIME_NUM = 23;
     const AFTER_15_MIN_NUM = 15;
@@ -94,7 +95,8 @@ class CalendarView {
         }  elseif (count($this->days) === 12) {
             // 年カレンダービュー
             // 一ヶ月ごとに処理
-            $tasks = [];
+            $task_dates = PlanningTask::getDatesOfTasksForOneYear((string) $this->carbon->year);
+            // dd((string) $this->carbon->year, $task_dates);
             foreach ($this->days as $days) {
                 $html[] = '<p>' . $days[0]->month . '月</p>';
                 $html[] = '<table>';
@@ -111,7 +113,6 @@ class CalendarView {
                 $html[] = '</thead>';
                 $html[] = '<tbody>';
 
-                $tasks[] = PlanningTask::getTasks($days);
                 $start_day = $days[0]->startOfWeek();
                 $last_day = $days[0]->endOfWeek();
                 for ($i = 0; $i < 5; $i++) {
@@ -119,7 +120,7 @@ class CalendarView {
                     $html[] = '<tr>';
                     while ($start_day->lte($last_day)) {
                         $html[] = '<td class="">';
-                        $html[] = '<a href="/replaced-task-display/' . $start_day->format('Y-m-d') . '" class="date js_task-list' . PlanningTask::returnClassNameIfDateTaskExists($start_day->format('Y-m-d')) . '" data-date="' . $start_day->format('Y-m-d') . '">';
+                        $html[] = '<a href="/replaced-task-display/' . $start_day->format('Y-m-d') . '" class="date js_task-list' . $this->getClassNameIfDateTaskExists($task_dates, $start_day->format('Y-m-d')) . $this->getClassNameIfToday($start_day->format('Y-m-d')) . '" data-date="' . $start_day->format('Y-m-d') . '">';
                         $html[] = $this->getDay($start_day);
                         $html[] = '</a>';
                         $html[] = '</td>';
@@ -210,5 +211,17 @@ class CalendarView {
         }
 
         return strtolower($day->format('D'));
+    }
+
+    private function getClassNameIfDateTaskExists(array $task_dates, string $date) {
+        if (array_key_exists($date, $task_dates)) {
+            return ' tasks-include';
+        }
+    }
+
+    private function getClassNameIfToday(string $date) {
+        if ($date === $this->carbon::today()->format('Y-m-d')) {
+            return ' todays-date';
+        }
     }
 }

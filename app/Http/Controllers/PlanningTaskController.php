@@ -28,7 +28,6 @@ class PlanningTaskController extends Controller
     }
 
     public function store(Request $request) {
-        dd(getType($request->date));
         $request->validate([
             'name' => 'required|string|max:255',
             'description'  => 'required|string|max:5000',

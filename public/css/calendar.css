@@ -55,6 +55,6 @@ tbody > tr:last-child th:after {
   text-decoration: none;
 }
 
-.todays-date {
+.date.todays-date {
   color: green;
 }

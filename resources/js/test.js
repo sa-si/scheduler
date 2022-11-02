@@ -661,19 +661,20 @@ if (
     eventRegistrationInMonthlyAndYear();
 }
 
-function addClassNameToTodaysDate() {
-    const today_obj = new Date();
-    const year = today_obj.getFullYear();
-    const month = today_obj.getMonth() + 1;
-    const date = today_obj.getDate();
+// function addClassNameToTodaysDate() {
+//     const today_obj = new Date();
+//     const year = today_obj.getFullYear();
+//     const month = today_obj.getMonth() + 1;
+//     const date = today_obj.getDate();
 
-    const today = year + "-" + month + "-" + date;
-    const todayElement = document.querySelector(
-        "[class='date'][data-date='" + today + "']"
-    );
-    console.log(todayElement);
-    if (todayElement) {
-        todayElement.classList.add("todays-date");
-    }
-}
-addClassNameToTodaysDate();
+//     const today = year + "-" + month + "-" + date;
+//     const todayElement = document.querySelector(
+//         "[class='date'][data-date='" + today + "']"
+//     );
+//     console.log(todayElement);
+//     if (todayElement) {
+//         todayElement.classList.add("todays-date");
+//     }
+// }
+// addClassNameToTodaysDate();
+// console.log(calendar.tasks);

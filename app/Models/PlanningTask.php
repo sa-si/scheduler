@@ -72,19 +72,25 @@ class PlanningTask extends Model
         return $tasks;
     }
 
-    public static function returnClassNameIfDateTaskExists(string $day) {
-        if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
-            return ' tasks-include';
-        } else {
-            return '';
-        }
+    public static function getDatesOfTasksForOneYear(string $year) {
+        $task_dates = PlanningTask::select('date')->where('user_id', Auth::id())->where('date', 'like', $year . '%')->orderBy('date', 'ASC')->get()->keyBy('date')->toArray();
+
+        return $task_dates;
     }
 
-    public static function returnClassNameIfToday(string $day) {
-        if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
-            return ' tasks-include';
-        } else {
-            return '';
-        }
-    }
+    // public static function returnClassNameIfDateTaskExists(string $day) {
+    //     if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
+    //         return ' tasks-include';
+    //     } else {
+    //         return '';
+    //     }
+    // }
+
+    // public static function returnClassNameIfToday(string $day) {
+    //     if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
+    //         return ' tasks-include';
+    //     } else {
+    //         return '';
+    //     }
+    // }
 }
