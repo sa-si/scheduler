@@ -9,6 +9,7 @@ use App\Models\Tag;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class PlanningTask extends Model
 {
@@ -34,6 +35,11 @@ class PlanningTask extends Model
 //        }
 //    }
 
+    public function getStartTimeAttribute($value)
+    {
+        return date('H:i', strtotime($value));
+    }
+
     public static function getTasks(array $days) {
         // $daysの日付の数分planning_taskテーブルのレコードを取得
         $all_tasks = [];
@@ -49,7 +55,7 @@ class PlanningTask extends Model
             $day_tasks = [];
 
             foreach ($tasks as $task) {
-                $time = date('H:i', strtotime($task['start_time']));
+                $time = $task['start_time'];
                 $day_tasks[$time] = $task;
             }
 
@@ -58,5 +64,27 @@ class PlanningTask extends Model
         }
 
         return $all_tasks;
+    }
+
+    public static function getDailyTasks(string $day) {
+        $tasks = PlanningTask::where('user_id', Auth::id())->where('date', $day)->orderBy('start_time', 'asc')->get()->toArray();
+
+        return $tasks;
+    }
+
+    public static function returnClassNameIfDateTaskExists(string $day) {
+        if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
+            return ' tasks-include';
+        } else {
+            return '';
+        }
+    }
+
+    public static function returnClassNameIfToday(string $day) {
+        if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
+            return ' tasks-include';
+        } else {
+            return '';
+        }
     }
 }

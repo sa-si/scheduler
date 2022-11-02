@@ -11062,9 +11062,5 @@ textarea.form-control-lg {
   will-change: transform;
 }
 
-.modal__overlay > div {
-  pointer-events: auto;
-}
-
 
 

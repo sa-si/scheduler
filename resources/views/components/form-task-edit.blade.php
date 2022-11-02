@@ -1,5 +1,4 @@
 <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
-    {{-- <input type="hidden" value="{{ $id }}" id="modal-id"> --}}
     <form action="{{ route('task') }}" method="POST" name="task">
         @csrf
         <input type="hidden" name="task_id" value="{{ $task->id ? $task->id : '' }}">
@@ -25,7 +24,7 @@
                     <input type="date" name="date" value="{{ old('date', $task ? $task->date : '1800-01-01') }}">
                     {{-- 開始時間 --}}
                     <input type="time" name="one_day_start_time"
-                        value="{{ old('one_day_start_time', $task ? substr($task->start_time, 11, 5) : '00:00') }}">
+                        value="{{ old('one_day_start_time', $task ? $task->start_time : '00:00') }}">
                     {{-- 終了時間 --}}
                     <input type="time" name="one_day_end_time"
                         value="{{ old('one_day_end_time', $task ? substr($task->end_time, 11, 5) : '00:00') }}">

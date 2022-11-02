@@ -29,6 +29,7 @@ Route::get('/home', [HomeController::class, 'home'])->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/async-form', [CalendarDayController::class, 'form'])->name('form');
+    Route::get('/replaced-task-display/{day}', [PlanningTaskController::class, 'getDailyTasksInJson'])->name('replaced-task-display');
     Route::get('/day/{year}/{month}/{day}', [CalendarDayController::class, 'index'])->name('day');
     Route::get('/week/{year}/{month}/{day}', [CalendarWeekController::class, 'index'])->name('week');
     Route::get('/month/{year}/{month}/{day}', [CalendarMonthController::class, 'index'])->name('month');

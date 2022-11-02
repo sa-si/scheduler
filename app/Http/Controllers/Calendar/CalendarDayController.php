@@ -27,7 +27,7 @@ class CalendarDayController extends Controller
 
     public function form(Request $request) {
         $task = PlanningTask::where('date', $request->date)->where('start_time', $request->time)->whereNull('deleted_at')->get()->first() ?? '';
-        if ($task) {
+        if (!$request->form && $task) {
             $registered_project = $task->project;
             $registered_project_id = $registered_project->id ?? null;
             $projects = Project::where('user_id', Auth::id())->where('id', '<>', $registered_project_id)->get();
@@ -48,9 +48,13 @@ class CalendarDayController extends Controller
         $associated_tags = [];
         // dd($request->date, $request->time);
         $date = $request->date;
-        $start_time = $request->time;
-        $end_time = date('H:i', strtotime("${start_time} +15 min"));
-        // dd($date, $end_time);
+        if ($request->form) {
+            $start_time = '00:00';
+            $end_time = '00:00';
+        } else {
+            $start_time = $request->time;
+            $end_time = date('H:i', strtotime("${start_time} +15 min"));
+        }
 
         return view('components.form-task-create', compact('date', 'start_time', 'end_time', 'registered_project', 'projects', 'tags', 'associated_tags'));
     }

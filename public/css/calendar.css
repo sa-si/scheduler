@@ -49,3 +49,12 @@ tbody > tr:last-child th:after {
 .js_form:not(:last-child) {
   border-bottom: 1px solid #000000;
 }
+
+.tasks-include {
+  color: red;
+  text-decoration: none;
+}
+
+.todays-date {
+  color: green;
+}

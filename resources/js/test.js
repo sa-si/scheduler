@@ -1,4 +1,6 @@
+import { indexOf } from "lodash";
 import MicroModal from "micromodal";
+const current_path = location.pathname;
 
 window.onload = function () {
     var target = document.getElementsByClassName("js_initial-disable-wrapper");
@@ -149,6 +151,110 @@ document.addEventListener(
     false
 );
 
+// parent_element -> DB登録したタスク名(p要素)を差し込む親div要素
+function replacedTaskDisplayInMonthlyCalendar(parent_element = "") {
+    // console.log("1つ目div", parent_element);
+    if (parent_element) {
+        let xhr = new XMLHttpRequest();
+        // 日時の値を取得 (2022-10-22, など)
+        const date = parent_element.getAttribute("data-date");
+        // タスク名(p要素)を差し込む親div要素の隣の親div要素
+        const first_element = document.querySelectorAll(
+            'div[class="js_form"][data-date="' + date + '"'
+        )[0];
+
+        const second_element = document.querySelectorAll(
+            'div[class="js_form"][data-date="' + date + '"'
+        )[1];
+        // let second_parent_element;
+        // form_elements.forEach((form) => {
+        //     console.log("all", form);
+        //     if (form !== parent_element) {
+        //         second_parent_element = form;
+        //     }
+        // });
+        // console.log("2つ目div", second_parent_element);
+        xhr.open("GET", "/replaced-task-display/" + date, true);
+        xhr.responseType = "json";
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                // 以下、全体的に、新表示箇所の日付欄に対しての操作
+                //レスポンスjsonデータ(該当日のタスクをdbから取得)
+                const response = xhr.response;
+                if (response[0]) {
+                    first_element.setAttribute(
+                        "data-time",
+                        response[0]["start_time"]
+                    );
+                    if (first_element.hasAttribute("data-new-form")) {
+                        first_element.removeAttribute("data-new-form");
+                    }
+                    first_element.innerHTML =
+                        "<p>" + response[0]["name"] + "</p>";
+                    if (response.length > 1) {
+                        second_element.setAttribute(
+                            "data-time",
+                            response[1]["start_time"]
+                        );
+                        if (second_element.hasAttribute("data-new-form")) {
+                            second_element.removeAttribute("data-new-form");
+                        }
+                        second_element.innerHTML =
+                            "<p>" + response[1]["name"] + "</p>";
+                        if (response.length > 2) {
+                            const other_tasks_length = response.length - 2;
+                            const other_tasks_element =
+                                second_element.nextElementSibling;
+                            const new_other_tasks_element =
+                                document.createElement("a");
+                            new_other_tasks_element.href =
+                                "/replaced-task-display/" + date;
+                            new_other_tasks_element.className = "js_task-list";
+                            new_other_tasks_element.dataset.date = date;
+                            new_other_tasks_element.textContent =
+                                "他" + other_tasks_length + "件";
+                            if (other_tasks_element) {
+                                other_tasks_element.replaceWith(
+                                    new_other_tasks_element
+                                );
+                                eventRegistrationInMonthlyAndYear();
+                            } else {
+                                second_element.after(new_other_tasks_element);
+                                eventRegistrationInMonthlyAndYear();
+                            }
+                        } else {
+                            if (second_element.nextElementSibling) {
+                                second_element.nextElementSibling.parentNode.removeChild(
+                                    second_element.nextElementSibling
+                                );
+                            }
+                        }
+                    } else {
+                        second_element.setAttribute("data-time", "00:00");
+                        if (!second_element.hasAttribute("data-new-form")) {
+                            second_element.setAttribute("data-new-form", "");
+                        }
+                        if (second_element.firstChild) {
+                            second_element.removeChild(
+                                second_element.firstChild
+                            );
+                        }
+                    }
+                } else {
+                    first_element.setAttribute("data-time", "00:00");
+                    if (!first_element.hasAttribute("data-new-form")) {
+                        first_element.setAttribute("data-new-form", "");
+                    }
+                    if (first_element.hasChildNodes()) {
+                        first_element.removeChild(first_element.firstChild);
+                    }
+                }
+            }
+        };
+        xhr.send(null);
+    }
+}
+
 function submitForm() {
     let xhr = new XMLHttpRequest();
     let formData = new FormData(document.forms.task);
@@ -169,23 +275,41 @@ function submitForm() {
     });
 }
 
-function deleteTask(deleteUrl, target) {
+function deleteTask(deleteUrl, target, target_global) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", deleteUrl, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             MicroModal.close("modal-1", {});
-            target.parentNode.removeChild(target);
+            if (current_path.indexOf("year") !== -1) {
+                const target_parent = target.parentNode;
+                target.parentNode.removeChild(target);
+                if (!target_parent.hasChildNodes()) {
+                    console.log(target_parent, "子はいません！");
+                    // 以下に、a要素の水色丸を消す処理を書く
+                    if (target_global.classList.contains("tasks-include")) {
+                        target_global.classList.remove("tasks-include");
+                    }
+                }
+            } else if (current_path.indexOf("month") !== -1) {
+                replacedTaskDisplayInMonthlyCalendar(target);
+            } else {
+                target.removeChild(target.firstChild);
+            }
         }
     };
     xhr.send(null);
 }
 
-function getForm(replace, date, time, target) {
+function getForm(replace, date, time, target, target_global) {
+    console.log(target, target_global);
     var path = document.getElementById("form-path").value;
     let url = new URL(path);
     url.searchParams.set("date", date);
     url.searchParams.append("time", time);
+    if (target.hasAttribute("data-new-form")) {
+        url.searchParams.append("form", "new");
+    }
     var xhr = new XMLHttpRequest();
     xhr.open("GET", decodeURIComponent(String(url)), true);
     xhr.onreadystatechange = function () {
@@ -230,7 +354,6 @@ function getForm(replace, date, time, target) {
                     modal.addEventListener("click", function (e) {
                         if (e.target.hasAttribute("data-close-confirm")) {
                             if (modal.classList.contains("value-change")) {
-                                console.log("フォーム変更あり!");
                                 MicroModal.show("modal-2", {});
                                 form_destruction.addEventListener(
                                     "click",
@@ -249,18 +372,174 @@ function getForm(replace, date, time, target) {
                         document.getElementById("js_form-submit");
                     formSubmit.addEventListener("click", function () {
                         submitForm();
-                        target.innerHTML =
-                            "<p>" +
-                            modal.querySelector("input[name='name']").value +
-                            "</p>";
+                        const input_date =
+                            modal.querySelector("input[name='date']").value;
+                        const input_time = modal.querySelector(
+                            "input[name='one_day_start_time']"
+                        ).value;
+                        const input_element = document.querySelector(
+                            'div[class="js_form"][data-date="' +
+                                input_date +
+                                '"][data-time="' +
+                                input_time +
+                                '"]'
+                        );
+
+                        if (current_path.indexOf("month") !== -1) {
+                            // 以下の書き方の場合、必ず、１つ目のdiv要素になる
+                            const input_month_element = document.querySelector(
+                                'div[class="js_form"][data-date="' +
+                                    input_date +
+                                    '"'
+                            );
+                            // console.log("月カレです", input_month_element);
+                            // 画面内に書き換え対象の欄がある場合
+                            if (input_month_element) {
+                                replacedTaskDisplayInMonthlyCalendar(
+                                    input_month_element
+                                );
+                                if (
+                                    input_date !==
+                                    target.getAttribute("data-date")
+                                ) {
+                                    target.setAttribute("data-time", "00:00");
+                                    if (target.hasChildNodes()) {
+                                        target.removeChild(target.firstChild);
+                                    }
+                                }
+                            } else {
+                                // 新規/編集タスクが当月以外だったら
+                                if (
+                                    input_date !==
+                                    target.getAttribute("data-date")
+                                ) {
+                                    if (target.hasChildNodes()) {
+                                        target.setAttribute(
+                                            "data-time",
+                                            "00:00"
+                                        );
+                                        target.removeChild(target.firstChild);
+                                    }
+                                }
+                            }
+
+                            return;
+                        }
+
+                        if (current_path.indexOf("year") !== -1) {
+                            if (
+                                target.getAttribute("data-date") === input_date
+                            ) {
+                                console.log("同日更新");
+                                const url = target_global.getAttribute("href");
+                                let xhr = new XMLHttpRequest();
+                                xhr.open("GET", url, true);
+                                xhr.responseType = "json";
+                                xhr.onreadystatechange = function () {
+                                    if (
+                                        xhr.readyState == 4 &&
+                                        xhr.status == 200
+                                    ) {
+                                        console.log("同日更新,通信成功");
+                                        let tasks = xhr.response;
+                                        // console.log(tasks.length);
+
+                                        const parent_content =
+                                            document.getElementById(
+                                                "modal-3-content"
+                                            );
+
+                                        let html = "";
+                                        if (tasks.length === 0) {
+                                            html =
+                                                "<p>登録したタスクがありません。</p>";
+                                        } else {
+                                            tasks.forEach((task) => {
+                                                html +=
+                                                    "<div class='js_form' data-date='" +
+                                                    task["date"] +
+                                                    "' data-time='" +
+                                                    task["start_time"] +
+                                                    "'><p><span>" +
+                                                    task["start_time"] +
+                                                    "</span>" +
+                                                    task["name"] +
+                                                    "</p></div>";
+                                            });
+                                        }
+                                        parent_content.innerHTML = html;
+                                    }
+                                };
+                            } else {
+                                const target_parent = target.parentNode;
+                                target.parentNode.removeChild(target);
+                                if (!target_parent.hasChildNodes()) {
+                                    console.log(
+                                        "更新して子がいなくなってもうた！"
+                                    );
+                                    // 以下に、a要素の水色丸を消す処理を書く
+                                    if (
+                                        target_global.classList.contains(
+                                            "tasks-include"
+                                        )
+                                    ) {
+                                        target_global.classList.remove(
+                                            "tasks-include"
+                                        );
+                                    }
+                                }
+
+                                const input_element_year =
+                                    document.querySelector(
+                                        'a[class="js_task-list"][data-date="' +
+                                            input_date +
+                                            '"]'
+                                    );
+                                if (input_element_year) {
+                                    if (
+                                        !input_element_year.classList.contains(
+                                            "tasks-include"
+                                        )
+                                    ) {
+                                        input_element_year.classList.add(
+                                            "tasks-include"
+                                        );
+                                    }
+                                }
+                            }
+
+                            return;
+                        }
+
+                        if (target === input_element) {
+                            target.innerHTML =
+                                "<p>" +
+                                modal.querySelector("input[name='name']")
+                                    .value +
+                                "</p>";
+                        } else if (input_element && target !== input_element) {
+                            input_element.innerHTML =
+                                "<p>" +
+                                modal.querySelector("input[name='name']")
+                                    .value +
+                                "</p>";
+                            if (target.hasChildNodes()) {
+                                const child = target.children[0];
+                                target.removeChild(child);
+                            }
+                        } else if (!input_element && target !== input_element) {
+                            if (target.hasChildNodes()) {
+                                const child = target.children[0];
+                                target.removeChild(child);
+                            }
+                        }
                     });
 
                     if (modal.querySelector("input[name='task_id']")) {
                         task_destroy.addEventListener("click", function (e) {
                             e.preventDefault();
                             const deleteUrl = e.target.getAttribute("href");
-                            // console.log(1 * 1);
-                            deleteTask(deleteUrl, target);
+                            deleteTask(deleteUrl, target, target_global);
                         });
                     }
                 },
@@ -272,25 +551,129 @@ function getForm(replace, date, time, target) {
     xhr.send(null);
 }
 
-// var taskForm1 = document.getElementById("js_form-display");
-var target = document.getElementsByClassName("js_form");
+function displayTaskList(date, url, target_global) {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "json";
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let tasks = xhr.response;
+            console.log(tasks.length);
+            if (current_path.indexOf("month") !== -1) {
+                tasks = tasks.slice(2);
+            }
+            const date_obj = new Date(date);
+            const day_arr = ["月", "火", "水", "木", "金", "土", "日"];
+            const month_for_display = date_obj.getMonth() + 1;
+            const date_for_display = date_obj.getDate();
+            const day_for_display = day_arr[date_obj.getDay()];
+            const tasks_header_title =
+                month_for_display +
+                "/" +
+                date_for_display +
+                "(" +
+                day_for_display +
+                ")";
+            const parent_title = document.getElementById("modal-3-title");
+            const parent_content = document.getElementById("modal-3-content");
+            parent_title.innerHTML = tasks_header_title;
+            let html = "";
+            if (tasks.length === 0) {
+                html = "<p>登録したタスクがありません。</p>";
+            } else {
+                tasks.forEach((task) => {
+                    html +=
+                        "<div class='js_form' data-date='" +
+                        task["date"] +
+                        "' data-time='" +
+                        task["start_time"] +
+                        "'><p><span>" +
+                        task["start_time"] +
+                        "</span>" +
+                        task["name"] +
+                        "</p></div>";
+                });
+            }
+            parent_content.innerHTML = html;
+            MicroModal.show("modal-3", {
+                onShow: function (modal) {
+                    modal.addEventListener("click", function (e) {
+                        console.log(e.target);
+                        if (e.target.hasAttribute("data-close-confirm")) {
+                            MicroModal.close("modal-3", {});
+                        }
+                    });
 
-for (var i = 0; i < target.length; i++) {
+                    const modal_target =
+                        modal.getElementsByClassName("js_form");
+
+                    for (let i = 0; i < modal_target.length; i++) {
+                        modal_target[i].addEventListener("click", function (e) {
+                            console.log("年タスクリストのdivをclick!");
+                            const date = this.getAttribute("data-date");
+                            const time = this.getAttribute("data-time");
+                            getForm(
+                                "js_form-display",
+                                date,
+                                time,
+                                e.currentTarget,
+                                target_global
+                            );
+                            MicroModal.close("modal-3", {});
+                        });
+                    }
+                },
+            });
+        }
+    };
+    xhr.send(null);
+}
+
+const target = document.getElementsByClassName("js_form");
+
+for (let i = 0; i < target.length; i++) {
     target[i].addEventListener("click", function (e) {
-        // console.log(e.target);
-        var date = this.getAttribute("data-date");
-        var time = this.getAttribute("data-time");
-        // console.log(date, time, e.target);
-        getForm("js_form-display", date, time, e.target);
+        // console.log(e.currentTarget);
+        const date = this.getAttribute("data-date");
+        const time = this.getAttribute("data-time");
+        getForm("js_form-display", date, time, e.currentTarget);
     });
 }
 
-// function createCounter() {
-//     let obj = { closeModal: "" };
-//     // `increment`関数は`count`変数を参照
-//     function increment() {
-//         obj.closeModal = taskForm.querySelector("[data-micromodal-close]");
-//         return obj.closeModal;
-//     }
-//     return increment;
-// }
+function eventRegistrationInMonthlyAndYear() {
+    const task_list = document.getElementsByClassName("js_task-list");
+    for (let i = 0; i < task_list.length; i++) {
+        task_list[i].addEventListener("click", function (e) {
+            e.preventDefault();
+            const date = this.getAttribute("data-date");
+            const task_list_url = e.target.getAttribute("href");
+            const target_global = e.currentTarget;
+            console.log(target_global);
+            displayTaskList(date, task_list_url, target_global);
+        });
+    }
+}
+
+if (
+    current_path.indexOf("month") !== -1 ||
+    current_path.indexOf("year") !== -1
+) {
+    eventRegistrationInMonthlyAndYear();
+}
+
+function addClassNameToTodaysDate() {
+    const today_obj = new Date();
+    const year = today_obj.getFullYear();
+    const month = today_obj.getMonth() + 1;
+    const date = today_obj.getDate();
+
+    const today = year + "-" + month + "-" + date;
+    const todayElement = document.querySelector(
+        "[class='date'][data-date='" + today + "']"
+    );
+    console.log(todayElement);
+    if (todayElement) {
+        todayElement.classList.add("todays-date");
+    }
+}
+addClassNameToTodaysDate();

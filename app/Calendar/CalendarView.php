@@ -31,7 +31,7 @@ class CalendarView {
             $html[] = '<tr>';
             $html[] = '<td>hoge</td>';
             foreach ($this->days as $day) {
-                $html[] = '<th><div>'.$day->locale('ja')->shortDayName.'</div><div>'.$day->day.'</div></th>';
+                $html[] = '<th><div>'.$day->locale('ja')->shortDayName.'</div><p class="date" data-date="' . $day->format('Y-m-d') . '">'.$day->day.'</p></th>';
             }
             $html[] = '</tr>';
             $html[] = '</thead>';
@@ -93,6 +93,8 @@ class CalendarView {
             $html[] = '</table>';
         }  elseif (count($this->days) === 12) {
             // 年カレンダービュー
+            // 一ヶ月ごとに処理
+            $tasks = [];
             foreach ($this->days as $days) {
                 $html[] = '<p>' . $days[0]->month . '月</p>';
                 $html[] = '<table>';
@@ -109,7 +111,7 @@ class CalendarView {
                 $html[] = '</thead>';
                 $html[] = '<tbody>';
 
-                $tasks = PlanningTask::getTasks($days);
+                $tasks[] = PlanningTask::getTasks($days);
                 $start_day = $days[0]->startOfWeek();
                 $last_day = $days[0]->endOfWeek();
                 for ($i = 0; $i < 5; $i++) {
@@ -117,7 +119,9 @@ class CalendarView {
                     $html[] = '<tr>';
                     while ($start_day->lte($last_day)) {
                         $html[] = '<td class="">';
-                        $html[] = '<p>' . $this->getDay($start_day) . '</p>';
+                        $html[] = '<a href="/replaced-task-display/' . $start_day->format('Y-m-d') . '" class="date js_task-list' . PlanningTask::returnClassNameIfDateTaskExists($start_day->format('Y-m-d')) . '" data-date="' . $start_day->format('Y-m-d') . '">';
+                        $html[] = $this->getDay($start_day);
+                        $html[] = '</a>';
                         $html[] = '</td>';
                         $start_day = $start_day->addDay();
                     }
@@ -151,19 +155,32 @@ class CalendarView {
                 $html[] = '<tr>';
                 while ($start_day->lte($last_day)) {
                     $html[] = '<td class="' . $this->getClassName($start_day) . '">';
-                    $html[] = '<p>' . $this->getDay($start_day) . '</p>';
+                    $html[] = '<p class="date" data-date="' . $start_day->format('Y-m-d') . '">' . $this->getDay($start_day) . '</p>';
                     $key =  $start_day->format('Y-m-d');
                     if (isset($tasks[$key])) {
                         $display_tasks = array_slice($tasks[$key], 0, 2);
-                        foreach ($display_tasks as $task) {
-                            $html[] = '<p><a href="' . route('p-task.edit', ['id' => $task['id']])  . '">' . $task['name'] . '</a></p>';
-
+                        if (count($display_tasks) === 1) {
+                            foreach ($display_tasks as $task) {
+                                $html[] = '<div class="js_form" data-date="' . $task['date'] . '" data-time="' . $task['start_time'] .'">';
+                                $html[] = '<p>' . $task['name'] . '</p>';
+                                $html[] = "</div>";
+                            }
+                            $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
+                        } else {
+                            foreach ($display_tasks as $task) {
+                                $html[] = '<div class="js_form" data-date="' . $task['date'] . '" data-time="' . $task['start_time'] .'">';
+                                $html[] = '<p>' . $task['name'] . '</p>';
+                                $html[] = "</div>";
+                            }
+                            $other_tasks = array_slice($tasks[$key], 2);
+                            $other_tasks_length = count($other_tasks);
+                            if ($other_tasks_length !== 0){
+                                $html[] = '<a href="/replaced-task-display/' . $key . '" class="js_task-list" data-date="' . $key . '">他' . $other_tasks_length . '件</a>';
+                            }
                         }
-                        $other_tasks = array_slice($tasks[$key], 2);
-                        $other_tasks_length = count($other_tasks);
-                        if ($other_tasks_length !== 0){
-                            $html[] = '<p>他' . $other_tasks_length . 'つ</p>';
-                        }
+                    } else {
+                        $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
+                        $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
                     }
                     $html[] = '</td>';
                     $start_day = $start_day->addDay();

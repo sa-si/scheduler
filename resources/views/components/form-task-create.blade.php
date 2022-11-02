@@ -1,8 +1,6 @@
 <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
-    {{-- <input type="hidden" value="{{ $id }}" id="modal-id"> --}}
     <form action="{{ route('task') }}" method="POST" name="task">
         @csrf
-        {{-- <input type="hidden" value="{{ $task->id ? $task->id : '' }}"> --}}
         <div class="modal__overlay" tabindex="-1" id="testes" data-close-confirm="close-confirm">
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
                 <header class="modal__header">
@@ -62,10 +60,6 @@
                     @endforeach
                     <input type="text" name="new_tag" value="" placeholder="タグ名を入力">
                     <br><br>
-                    {{-- <button type="button" onclick="history.back()">戻る</button>
-                    <button>キャンセル</button>
-                    <button>実績タスクとしてコピー</button> --}}
-                    {{-- <button type="button" id="js_form-submit">(仮)登録</button> --}}
                 </main>
                 <footer class="modal__footer">
                     <button type="button" class="modal__btn modal__btn-primary" id="js_form-submit">保存</button>

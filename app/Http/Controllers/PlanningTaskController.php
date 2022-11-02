@@ -18,6 +18,7 @@ class PlanningTaskController extends Controller
     //     $tags = Tag::where('user_id', Auth::id())->get();
     //     return view('planning-task-input');
     // }
+
     public function form(Request $request) {
        if (isset($request->task_id)) {
            $this->update($request);
@@ -258,5 +259,12 @@ class PlanningTaskController extends Controller
         // ->route('index')
         // ->with(['message' => 'タスクを削除しました。',
         // 'status' => 'alert']);
+    }
+
+    public function getDailyTasksInJson($day)
+    {
+        $tasks = PlanningTask::getDailyTasks($day);
+
+        return $tasks;
     }
 }
