@@ -267,4 +267,17 @@ class PlanningTaskController extends Controller
 
         return $tasks;
     }
+
+    public function toggleCompletionChecks($id)
+    {
+        $task = PlanningTask::findOrFail($id);
+
+        if ($task->completion_check === 0) {
+            $task->update(['completion_check' => 1]);
+        } elseif ($task->completion_check === 1) {
+            $task->update(['completion_check' => 0]);
+        }
+
+        return $task;
+    }
 }

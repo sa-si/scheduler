@@ -15,7 +15,7 @@ class PlanningTask extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['user_id', 'project_id', 'name', 'date', 'start_time', 'end_time', 'description'];
+    protected $fillable = ['user_id', 'project_id', 'name', 'date', 'start_time', 'end_time', 'description', 'completion_check'];
 
     protected $dates = [
         'start_time',

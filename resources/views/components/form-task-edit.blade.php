@@ -72,6 +72,14 @@
 
                     <button type="button" class="modal__btn" aria-label="Close this dialog window"
                         data-close-confirm="close-confirm">キャンセル</button>
+                        <a href="{{ route('toggle-completion-checks', ['id' => $task->id]) }}" data-completion-check="{{ $task->completion_check }}" id="task_toggle_completion_checks">
+                            @if ($task->completion_check === 0)
+                                完了にする
+                            @elseif ($task->completion_check === 1)
+                                未完了にする
+                            @endif
+
+                        </a>
                 </footer>
             </div>
         </div>

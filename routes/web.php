@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');
     Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
     Route::post('/task', [PlanningTaskController::class, 'form'])->name('task');
+    Route::get('/toggle-completion-checks/{id}', [PlanningTaskController::class, 'toggleCompletionChecks'])->name('toggle-completion-checks');
     // Route::get('/planning-task-update/{id}', [PlanningTaskController::class, 'edit'])->name('p-task.edit');
     Route::post('/planning-task-update', [PlanningTaskController::class, 'update'])->name('p-task.update');
     Route::get('/task-destroy/{id}', [PlanningTaskController::class, 'destroy'])->name('task.destroy');

@@ -301,6 +301,36 @@ function deleteTask(deleteUrl, target, target_global) {
     xhr.send(null);
 }
 
+function toggleTaskCompletionChecks(toggleUrl, completion_check_element) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", toggleUrl, true);
+    xhr.responseType = "json";
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const completion_check_value =
+                completion_check_element.getAttribute("data-completion-check");
+            const db_completion_check_value = xhr.response["completion_check"];
+            console.log(completion_check_value, db_completion_check_value);
+            if (completion_check_value !== db_completion_check_value) {
+                if (completion_check_value === "0") {
+                    completion_check_element.setAttribute(
+                        "data-completion-check",
+                        1
+                    );
+                    completion_check_element.innerText = "未完了にする";
+                } else if (completion_check_value === "1") {
+                    completion_check_element.setAttribute(
+                        "data-completion-check",
+                        0
+                    );
+                    completion_check_element.innerText = "完了にする";
+                }
+            }
+        }
+    };
+    xhr.send(null);
+}
+
 function getForm(replace, date, time, target, target_global) {
     console.log(target, target_global);
     var path = document.getElementById("form-path").value;
@@ -541,6 +571,19 @@ function getForm(replace, date, time, target, target_global) {
                             const deleteUrl = e.target.getAttribute("href");
                             deleteTask(deleteUrl, target, target_global);
                         });
+
+                        task_toggle_completion_checks.addEventListener(
+                            "click",
+                            function (e) {
+                                e.preventDefault();
+                                const toggleUrl = e.target.getAttribute("href");
+                                const completion_check = e.target.getAttribute(
+                                    "data-completion-check"
+                                );
+                                // e.target.getAttribute("data-");
+                                toggleTaskCompletionChecks(toggleUrl, e.target);
+                            }
+                        );
                     }
                 },
             });
