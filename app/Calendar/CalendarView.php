@@ -115,7 +115,16 @@ class CalendarView {
 
                 $start_day = $days[0]->startOfWeek();
                 $last_day = $days[0]->endOfWeek();
-                for ($i = 0; $i < 5; $i++) {
+                $fifth_weekend = $start_day->addDays(34)->toDateString();
+                $end_of_month = $days[0]->endOfMonth()->toDateString();
+
+                if ($fifth_weekend > $end_of_month || $fifth_weekend === $end_of_month) {
+                    $num_weeks_to_display = 5;
+                } elseif ($fifth_weekend < $end_of_month) {
+                    $num_weeks_to_display = 6;
+                }
+
+                for ($i = 0; $i < $num_weeks_to_display; $i++) {
                     // 1週間分の日付レンダリング要素
                     $html[] = '<tr>';
                     while ($start_day->lte($last_day)) {
@@ -151,7 +160,16 @@ class CalendarView {
             $tasks = PlanningTask::getTasks($this->days);
             $start_day = $this->days[0]->startOfWeek();
             $last_day = $this->days[0]->endOfWeek();
-            for ($i = 0; $i < 5; $i++) {
+            $fifth_weekend = $start_day->addDays(34)->toDateString();
+            $end_of_month = $this->days[0]->endOfMonth()->toDateString();
+
+            if ($fifth_weekend > $end_of_month || $fifth_weekend === $end_of_month) {
+                $num_weeks_to_display = 5;
+            } elseif ($fifth_weekend < $end_of_month) {
+                $num_weeks_to_display = 6;
+            }
+
+            for ($i = 0; $i < $num_weeks_to_display; $i++) {
                 // 1週間分の日付レンダリング要素
                 $html[] = '<tr>';
                 while ($start_day->lte($last_day)) {

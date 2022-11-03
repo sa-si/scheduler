@@ -180,9 +180,6 @@
             {{--
         </div> --}}
     </div>
-    <script>
-        // const calendar = @json($calendar);
-    </script>
 </body>
 
 </html>
