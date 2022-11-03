@@ -30,10 +30,10 @@ Route::get('/home', [HomeController::class, 'home'])->name('home');
 Route::middleware('auth')->group(function () {
     Route::get('/async-form', [CalendarDayController::class, 'form'])->name('form');
     Route::get('/replaced-task-display/{day}', [PlanningTaskController::class, 'getDailyTasksInJson'])->name('replaced-task-display');
-    Route::get('/day/{year}/{month}/{day}', [CalendarDayController::class, 'index'])->name('day');
-    Route::get('/week/{year}/{month}/{day}', [CalendarWeekController::class, 'index'])->name('week');
-    Route::get('/month/{year}/{month}/{day}', [CalendarMonthController::class, 'index'])->name('month');
-    Route::get('/year/{year}/{month}/{day}', [CalendarYearController::class, 'index'])->name('year');
+    Route::get('/day/{year?}/{month?}/{day?}', [CalendarDayController::class, 'index'])->where( ['year' => '\d{4}', 'month' => '[1-9]|1[0-2]', 'day' => '[1-9]|1[0-9]|2[0-9]|3[0-1]'] )->name('day');
+    Route::get('/week/{year?}/{month?}/{day?}', [CalendarWeekController::class, 'index'])->where( ['year' => '\d{4}', 'month' => '[1-9]|1[0-2]', 'day' => '[1-9]|1[0-9]|2[0-9]|3[0-1]'] )->name('week');
+    Route::get('/month/{year?}/{month?}/{day?}', [CalendarMonthController::class, 'index'])->where( ['year' => '\d{4}', 'month' => '[1-9]|1[0-2]', 'day' => '[1-9]|1[0-9]|2[0-9]|3[0-1]'] )->name('month');
+    Route::get('/year/{year?}/{month?}/{day?}', [CalendarYearController::class, 'index'])->where( ['year' => '\d{4}', 'month' => '[1-9]|1[0-2]', 'day' => '[1-9]|1[0-9]|2[0-9]|3[0-1]'] )->name('year');
     Route::redirect('/', '/month');
 
     Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');

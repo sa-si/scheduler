@@ -6,14 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Calendar\CalendarView;
 use Illuminate\Http\Request;
 use Carbon\CarbonImmutable;
+use Ramsey\Uuid\Type\Integer;
 
 class CalendarYearController extends Controller
 {
-    public function index(Request $request, $year, $month, $day){
-        $date = $year . $month . $day;
-        $carbon = new CarbonImmutable($date);
-        $start_month = $carbon->year($year)->month(1)->day(1);
-        $last_month = $carbon->year($year)->month(12)->day(31);
+    public function index(Request $request, ?int $year = null, int $month = 1, ?int $day = 1){
+        $carbon = CarbonImmutable::createSafe($year, $month, $day);
+        $start_month = $carbon->month(1)->day(1);
+        $last_month = $carbon->month(12)->day(31);
         $days = [];
         $i = 0;
 
@@ -28,7 +28,7 @@ class CalendarYearController extends Controller
 
             $start_month = $start_month->addMonth();
         }
-
+        // dd($days);
         $calendar = new CalendarView($carbon, $days);
         $form_path = url(route('form'));
 

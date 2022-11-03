@@ -9,9 +9,10 @@ use Carbon\CarbonImmutable;
 
 class CalendarMonthController extends Controller
 {
-    public function index(Request $request, $year, $month, $day){
-        $date = $year . $month . $day;
-        $carbon = new CarbonImmutable($date);
+    public function index(Request $request, ?int $year = null, int $month = 1, int $day = 1){
+        // $date = $year . $month . $day;
+        // $carbon = new CarbonImmutable($date);
+        $carbon = CarbonImmutable::createSafe($year, $month, $day);
 
         $start_day = $carbon->startOfMonth();
         $last_day = $carbon->endOfMonth();
