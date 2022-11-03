@@ -38,7 +38,7 @@ class CalendarView {
             $html[] = '</thead>';
             $html[] = '<tbody>';
             $tasks = PlanningTask::getTasks($this->days);
-            $first_time = $this->carbon;
+            $first_time = $this->carbon->hour(0)->minute(0)->second(0);
             $last_time = $first_time->addHours(self::LAST_TIME_NUM);
 
             while ($first_time->lte($last_time)) {
