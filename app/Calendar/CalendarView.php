@@ -94,9 +94,9 @@ class CalendarView {
             $html[] = '</table>';
         }  elseif (count($this->days) === 12) {
             // 年カレンダービュー
+            $year = $this->carbon->year;
+            $task_dates = PlanningTask::getDatesOfTasksForOneYear($year);
             // 一ヶ月ごとに処理
-            $task_dates = PlanningTask::getDatesOfTasksForOneYear((string) $this->carbon->year);
-            // dd((string) $this->carbon->year, $task_dates);
             foreach ($this->days as $days) {
                 $html[] = '<p>' . $days[0]->month . '月</p>';
                 $html[] = '<table>';
@@ -128,8 +128,13 @@ class CalendarView {
                     // 1週間分の日付レンダリング要素
                     $html[] = '<tr>';
                     while ($start_day->lte($last_day)) {
+                        $start_day->year;
+                        $date = $start_day->format('Y-m-d');
+                        if ($start_day->year !== $year && PlanningTask::determineIfDateTaskExists($date)) {
+                            $task_dates[] = $date;
+                        }
                         $html[] = '<td class="">';
-                        $html[] = '<a href="/replaced-task-display/' . $start_day->format('Y-m-d') . '" class="date js_task-list' . $this->getClassNameIfDateTaskExists($task_dates, $start_day->format('Y-m-d')) . $this->getClassNameIfToday($start_day->format('Y-m-d')) . '" data-date="' . $start_day->format('Y-m-d') . '">';
+                        $html[] = '<a href="/replaced-task-display/' . $date . '" class="date js_task-list' . $this->getClassNameIfDateTaskExists($date, $task_dates) . $this->getClassNameIfToday($date) . '" data-date="' . $date . '">';
                         $html[] = $this->getDay($start_day);
                         $html[] = '</a>';
                         $html[] = '</td>';
@@ -231,8 +236,8 @@ class CalendarView {
         return strtolower($day->format('D'));
     }
 
-    private function getClassNameIfDateTaskExists(array $task_dates, string $date) {
-        if (array_key_exists($date, $task_dates)) {
+    private function getClassNameIfDateTaskExists(string $date, array $task_dates) {
+        if (in_array($date, $task_dates)) {
             return ' tasks-include';
         }
     }

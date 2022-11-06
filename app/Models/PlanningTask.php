@@ -73,18 +73,25 @@ class PlanningTask extends Model
     }
 
     public static function getDatesOfTasksForOneYear(string $year) {
-        $task_dates = PlanningTask::select('date')->where('user_id', Auth::id())->where('date', 'like', $year . '%')->orderBy('date', 'ASC')->get()->keyBy('date')->toArray();
+        $array_type_task_dates = PlanningTask::distinct()->select('date')->where('user_id', Auth::id())->where('date', 'like', $year . '%')->orderBy('date', 'ASC')->get()->toArray();
+
+        $task_dates = [];
+        foreach ($array_type_task_dates as $date) {
+            foreach ($date as $value) {
+                $task_dates[] = $value;
+            }
+        }
 
         return $task_dates;
     }
 
-    // public static function returnClassNameIfDateTaskExists(string $day) {
-    //     if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
-    //         return ' tasks-include';
-    //     } else {
-    //         return '';
-    //     }
-    // }
+    public static function determineIfDateTaskExists(string $day) {
+        if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     // public static function returnClassNameIfToday(string $day) {
     //     if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
