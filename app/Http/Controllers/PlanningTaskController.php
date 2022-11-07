@@ -31,12 +31,18 @@ class PlanningTaskController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description'  => 'required|string|max:5000',
-            'date' => 'sometimes|required|string',
-            'one_day_start_time' => 'sometimes|required|string',
-            'one_day_end_time' => 'sometimes|required|string',
+            'date' => 'required|string|size:10',
+            'one_day_start_time' => 'required|date_format:H:i|size:5',
+            'one_day_end_time' => 'required|date_format:H:i|after:one_day_start_time|size:5',
             'project' => 'nullable|string',
+            'tags.*.*' => 'nullable|integer|size:1',
         ]);
+        // dd($request->date, $request->one_day_start_time, $request->one_day_end_time);
 
+        $task_time_duplication_check_result = PlanningTask::taskTimeDuplicationCheck($request->date, $request->one_day_start_time, $request->one_day_end_time);
+        if ($task_time_duplication_check_result) {
+            return;
+        }
         // PlanningTask::create(['user_id' => Auth::id(), 'project_id' => $project_id ?? null, 'name' => $request->name , 'date' => $request->date, 'start_time' => $request->one_day_start_time, 'end_time' => $request->one_day_end_time, 'description' => $request->description]);
         DB::transaction(function () use($request) {
             if ( !empty($request->project) || $request->project === '0' ) {
@@ -141,10 +147,11 @@ class PlanningTaskController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description'  => 'required|string|max:5000',
-            'date' => 'sometimes|required|string',
-            'one_day_start_time' => 'sometimes|required|string',
-            'one_day_end_time' => 'sometimes|required|string',
+            'date' => 'required|string|size:10',
+            'one_day_start_time' => 'required|date_format:H:i|size:5',
+            'one_day_end_time' => 'required|date_format:H:i|after:one_day_start_time|size:5',
             'project' => 'nullable|string',
+            'tags.*.*' => 'nullable|integer|size:1',
         ]);
 
         $task = PlanningTask::find($request->task_id);

@@ -93,6 +93,15 @@ class PlanningTask extends Model
         }
     }
 
+    public function taskTimeDuplicationCheck($date, $start_time, $end_time) {
+        $num_duplicates = PlanningTask::where('date', $date)->where('start_time', '<', $end_time)->where('end_time', '>', $start_time)->count();
+        // dd($num_duplicates);
+        if ($num_duplicates > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     // public static function returnClassNameIfToday(string $day) {
     //     if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
     //         return ' tasks-include';
