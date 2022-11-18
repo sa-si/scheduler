@@ -356,9 +356,7 @@ function returnErrorMessagesIfFormHasInputErrors(form_data) {
         error_messages["name"] = "タスク名は255文字以内で入力してください";
     }
 
-    if (field_description === "") {
-        error_messages["description"] = "説明を入力してください";
-    } else if (field_description.length > 5000) {
+    if (field_description.length > 5000) {
         error_messages["description"] = "説明は5000文字以内で入力してください";
     }
 
@@ -588,7 +586,6 @@ function getForm(replace, date, time, target, target_global) {
                                     input_date +
                                     '"'
                             );
-                            // console.log("月カレです", input_month_element);
                             // 画面内に書き換え対象の欄がある場合
                             if (input_month_element) {
                                 replacedTaskDisplayInMonthlyCalendar(
