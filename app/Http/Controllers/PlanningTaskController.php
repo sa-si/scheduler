@@ -19,13 +19,14 @@ class PlanningTaskController extends Controller
         return view('planning-task-input');
     }
 
-    public function form(Request $request) {
-       if (isset($request->task_id)) {
-           $this->update($request);
-       } else {
-           $this->store($request);
-       }
-    }
+    // public function form(Request $request) {
+
+    //    if (isset($request->task_id)) {
+    //        $this->update($request);
+    //    } else {
+    //        $this->store($request);
+    //     }
+    // }
 
     public function store(Request $request) {
         $request->validate([
@@ -34,14 +35,13 @@ class PlanningTaskController extends Controller
             'date' => 'required|string|size:10',
             'one_day_start_time' => 'required|date_format:H:i|size:5',
             'one_day_end_time' => 'required|date_format:H:i|after:one_day_start_time|size:5',
-            'project' => 'nullable|string',
-            'tags.*.*' => 'nullable|integer|size:1',
+            'project' => 'nullable|integer',
+            'tags.*.*' => 'nullable|integer',
         ]);
-        // dd($request->date, $request->one_day_start_time, $request->one_day_end_time);
 
         $task_time_duplication_check_result = PlanningTask::taskTimeDuplicationCheck($request->date, $request->one_day_start_time, $request->one_day_end_time);
         if ($task_time_duplication_check_result) {
-            return;
+            return ['time_duplicated_notification_message' => '既にその時間には別のタスクが登録されています'];
         }
         // PlanningTask::create(['user_id' => Auth::id(), 'project_id' => $project_id ?? null, 'name' => $request->name , 'date' => $request->date, 'start_time' => $request->one_day_start_time, 'end_time' => $request->one_day_end_time, 'description' => $request->description]);
         DB::transaction(function () use($request) {
@@ -87,13 +87,13 @@ class PlanningTaskController extends Controller
         //     //     $tag_exists_if_get_id = Tag::where('user_id', '=', Auth::id())->where('name', '=', $posts['new_tag'])->exists() ? Tag::where('user_id', '=', Auth::id())->where('name', '=', $posts['new_tag'])->first()['id']: false;
 
         //     //     if ((!empty($posts['new_tag']) || $posts['new_tag'] === '0') && !$tag_exists_if_get_id) {
-        //     //         $tag = Tag::create(['user_id' => Auth::id(), 'name' => $posts['new_tag']]);
-        //     //         $tag_id = $tag->id;
-        //     //         PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_id]);
-        //     //     } elseif ($tag_exists_if_get_id && !in_array($tag_exists_if_get_id, $posts['tags'] ?? [])) {
-        //     //         $new_tag_existing = true;
-        //     //         PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
-        //     //     }
+            //     //         $tag = Tag::create(['user_id' => Auth::id(), 'name' => $posts['new_tag']]);
+            //     //         $tag_id = $tag->id;
+            //     //         PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_id]);
+            //     //     } elseif ($tag_exists_if_get_id && !in_array($tag_exists_if_get_id, $posts['tags'] ?? [])) {
+                //     //         $new_tag_existing = true;
+                //     //         PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
+                //     //     }
 
         //     //     if (!empty($posts['tags'][0])){
         //     //         $has_tags = true;
@@ -111,7 +111,7 @@ class PlanningTaskController extends Controller
         //     //         $task->id = $task->id;
 
         //     //         if ($tag_id) {
-        //     //             PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_id]);
+            //     //             PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_id]);
         //     //         } elseif ($new_tag_existing) {
         //     //             PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag_exists_if_get_id]);
         //     //         }
@@ -123,7 +123,10 @@ class PlanningTaskController extends Controller
         //     //         }
         //     //     }
         //     // }
-        });
+    });
+
+    return ['registration_success' => 'タスク登録成功'];
+
     }
 
     // public function edit($id)
@@ -144,14 +147,15 @@ class PlanningTaskController extends Controller
 
     public function update(Request $request)
     {
+        return response()->json(['method' => 'update']);
         $request->validate([
             'name' => 'required|string|max:255',
             'description'  => 'required|string|max:5000',
             'date' => 'required|string|size:10',
             'one_day_start_time' => 'required|date_format:H:i|size:5',
             'one_day_end_time' => 'required|date_format:H:i|after:one_day_start_time|size:5',
-            'project' => 'nullable|string',
-            'tags.*.*' => 'nullable|integer|size:1',
+            'project' => 'nullable|integer',
+            'tags.*.*' => 'nullable|integer',
         ]);
 
         $task = PlanningTask::find($request->task_id);

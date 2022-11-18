@@ -93,7 +93,7 @@ class PlanningTask extends Model
         }
     }
 
-    public function taskTimeDuplicationCheck($date, $start_time, $end_time) {
+    public static function taskTimeDuplicationCheck(string $date, string $start_time, string $end_time) {
         $num_duplicates = PlanningTask::where('date', $date)->where('start_time', '<', $end_time)->where('end_time', '>', $start_time)->count();
         // dd($num_duplicates);
         if ($num_duplicates > 0) {

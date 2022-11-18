@@ -8,6 +8,9 @@
     @csrf
     <input type="text" name="name" value="{{ old('name') }}" placeholder="タスク名を入力">
     <br><br>
+    @error('name')
+        <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
     <textarea name="description" id="" cols="30" rows="10" placeholder="説明を入力">{{ old('description') }}</textarea>
     <br><br>
     <div class="js_initial-disable-wrapper">

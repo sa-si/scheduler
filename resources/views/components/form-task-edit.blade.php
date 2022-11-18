@@ -1,7 +1,7 @@
 <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
     <form action="{{ route('task') }}" method="POST" name="task">
         @csrf
-        <input type="hidden" name="task_id" value="{{ $task->id ? $task->id : '' }}">
+        <input type="hidden" name="task_id" value="{{ $task->id ? $task->id : '' }}" id="task_id">
         <div class="modal__overlay" tabindex="-1" id="testes" data-close-confirm="close-confirm">
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
                 <header class="modal__header">

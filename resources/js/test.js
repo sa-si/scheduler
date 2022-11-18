@@ -255,24 +255,181 @@ function replacedTaskDisplayInMonthlyCalendar(parent_element = "") {
     }
 }
 
-function submitForm() {
-    let xhr = new XMLHttpRequest();
-    let formData = new FormData(document.forms.task);
-    xhr.open("POST", "/task", true);
-    xhr.send(formData);
-    xhr.onload = function () {
-        if (this.status != 200) {
-            console.log(this.status + ":エラーが発生しています。");
-        } else {
-            console.log(this.status + "正常に動作しました。");
-        }
-    };
+function displayErrorMessagesInForm(error_messages) {
+    const name = document.getElementById("error-form-task-field-name");
+    const description = document.getElementById(
+        "error-form-task-field-description"
+    );
+    const date = document.getElementById("error-form-task-field-date");
+    const one_day_start_time = document.getElementById(
+        "error-form-task-field-one_day_start_time"
+    );
+    const one_day_end_time = document.getElementById(
+        "error-form-task-field-one_day_end_time"
+    );
 
-    xhr.addEventListener("readystatechange", () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            MicroModal.close("modal-1");
+    if (error_messages["name"]) {
+        name.innerHTML = error_messages["name"];
+        if (name.classList.contains("display-none")) {
+            name.classList.remove("display-none");
         }
-    });
+    } else {
+        if (name.hasChildNodes()) {
+            name.innerHTML = "";
+        }
+        if (!name.classList.contains("display-none")) {
+            name.classList.add("display-none");
+        }
+    }
+
+    if (error_messages["description"]) {
+        description.innerHTML = error_messages["description"];
+        if (description.classList.contains("display-none")) {
+            description.classList.remove("display-none");
+        }
+    } else {
+        if (description.hasChildNodes()) {
+            description.innerHTML = "";
+        }
+        if (!description.classList.contains("display-none")) {
+            description.classList.add("display-none");
+        }
+    }
+
+    if (error_messages["date"]) {
+        date.innerHTML = error_messages["date"];
+        if (date.classList.contains("display-none")) {
+            date.classList.remove("display-none");
+        }
+    } else {
+        if (date.hasChildNodes()) {
+            date.innerHTML = "";
+        }
+        if (!date.classList.contains("display-none")) {
+            date.classList.add("display-none");
+        }
+    }
+
+    if (error_messages["one_day_start_time"]) {
+        one_day_start_time.innerHTML = error_messages["one_day_start_time"];
+        if (one_day_start_time.classList.contains("display-none")) {
+            one_day_start_time.classList.remove("display-none");
+        }
+    } else {
+        if (one_day_start_time.hasChildNodes()) {
+            one_day_start_time.innerHTML = "";
+        }
+        if (!one_day_start_time.classList.contains("display-none")) {
+            one_day_start_time.classList.add("display-none");
+        }
+    }
+
+    if (error_messages["one_day_end_time"]) {
+        one_day_end_time.innerHTML = error_messages["one_day_end_time"];
+        if (one_day_end_time.classList.contains("display-none")) {
+            one_day_end_time.classList.remove("display-none");
+        }
+    } else {
+        if (one_day_end_time.hasChildNodes()) {
+            one_day_end_time.innerHTML = "";
+        }
+        if (!one_day_end_time.classList.contains("display-none")) {
+            one_day_end_time.classList.add("display-none");
+        }
+    }
+}
+
+function returnErrorMessagesIfFormHasInputErrors(form_data) {
+    const error_messages = [];
+    const field_name = form_data.get("name");
+    const field_description = form_data.get("description");
+    const field_date = form_data.get("date");
+    const field_one_day_start_time = form_data.get("one_day_start_time");
+    const field_one_day_end_time = form_data.get("one_day_end_time");
+    // "00:00"形式になっているかチェックするための正規表現
+    const date_format = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+    const time_format = /^([01][0-9]|2[0-3]):(00|15|30|45)$/;
+
+    if (field_name === "") {
+        error_messages["name"] = "タスク名を入力してください";
+    } else if (field_name.length > 255) {
+        error_messages["name"] = "タスク名は255文字以内で入力してください";
+    }
+
+    if (field_description === "") {
+        error_messages["description"] = "説明を入力してください";
+    } else if (field_description.length > 5000) {
+        error_messages["description"] = "説明は5000文字以内で入力してください";
+    }
+
+    if (field_date === "") {
+        error_messages["date"] = "日付を入力してください";
+    } else if (!date_format.test(field_date)) {
+        error_messages["date"] = "日付を正しく入力してください";
+    }
+
+    if (field_one_day_start_time === "") {
+        error_messages["one_day_start_time"] = "開始時間を入力してください";
+    } else if (!time_format.test(field_one_day_start_time)) {
+        error_messages["one_day_start_time"] =
+            "開始時間を正しく入力してください";
+    }
+
+    if (field_one_day_end_time === "") {
+        error_messages["one_day_end_time"] = "終了時間を入力してください";
+    } else if (!time_format.test(field_one_day_end_time)) {
+        error_messages["one_day_end_time"] = "終了時間を正しく入力してください";
+    }
+
+    if (field_one_day_start_time === field_one_day_end_time) {
+        error_messages["one_day_start_time"] = "時間を正しく入力してください";
+    }
+
+    return error_messages;
+}
+
+function submitForm() {
+    let formData = new FormData(document.forms.task);
+    const url = document.getElementById("task_id")
+        ? "/planning-task-update"
+        : "/planning-task-input";
+    fetch(url, {
+        method: "POST",
+        body: formData,
+    })
+        .then((response) => {
+            if (!response.ok) {
+                console.log("error!");
+            }
+            console.log("ok!");
+            return response.json();
+        })
+        .then((data) => {
+            const one_day_start_time = document.getElementById(
+                "error-form-task-field-one_day_start_time"
+            );
+            const time_duplicated_notification_message =
+                data.time_duplicated_notification_message;
+
+            if (time_duplicated_notification_message) {
+                one_day_start_time.innerHTML =
+                    time_duplicated_notification_message;
+                if (one_day_start_time.classList.contains("display-none")) {
+                    one_day_start_time.classList.remove("display-none");
+                }
+            } else {
+                if (one_day_start_time.hasChildNodes()) {
+                    one_day_start_time.innerHTML = "";
+                }
+                if (!one_day_start_time.classList.contains("display-none")) {
+                    one_day_start_time.classList.add("display-none");
+                }
+                MicroModal.close("modal-1");
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 }
 
 function deleteTask(deleteUrl, target, target_global) {
@@ -332,7 +489,6 @@ function toggleTaskCompletionChecks(toggleUrl, completion_check_element) {
 }
 
 function getForm(replace, date, time, target, target_global) {
-    console.log(target, target_global);
     var path = document.getElementById("form-path").value;
     let url = new URL(path);
     url.searchParams.set("date", date);
@@ -400,8 +556,18 @@ function getForm(replace, date, time, target, target_global) {
 
                     const formSubmit =
                         document.getElementById("js_form-submit");
-                    formSubmit.addEventListener("click", function () {
-                        submitForm();
+
+                    formSubmit.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        const form_data = new FormData(document.forms.task);
+                        const error_messages =
+                            returnErrorMessagesIfFormHasInputErrors(form_data);
+                        if (Object.keys(error_messages).length > 0) {
+                            displayErrorMessagesInForm(error_messages);
+                            return;
+                        } else {
+                            submitForm();
+                        }
                         const input_date =
                             modal.querySelector("input[name='date']").value;
                         const input_time = modal.querySelector(
@@ -580,7 +746,6 @@ function getForm(replace, date, time, target, target_global) {
                                 const completion_check = e.target.getAttribute(
                                     "data-completion-check"
                                 );
-                                // e.target.getAttribute("data-");
                                 toggleTaskCompletionChecks(toggleUrl, e.target);
                             }
                         );
@@ -676,7 +841,6 @@ const target = document.getElementsByClassName("js_form");
 
 for (let i = 0; i < target.length; i++) {
     target[i].addEventListener("click", function (e) {
-        // console.log(e.currentTarget);
         const date = this.getAttribute("data-date");
         const time = this.getAttribute("data-time");
         getForm("js_form-display", date, time, e.currentTarget);
@@ -703,21 +867,3 @@ if (
 ) {
     eventRegistrationInMonthlyAndYear();
 }
-
-// function addClassNameToTodaysDate() {
-//     const today_obj = new Date();
-//     const year = today_obj.getFullYear();
-//     const month = today_obj.getMonth() + 1;
-//     const date = today_obj.getDate();
-
-//     const today = year + "-" + month + "-" + date;
-//     const todayElement = document.querySelector(
-//         "[class='date'][data-date='" + today + "']"
-//     );
-//     console.log(todayElement);
-//     if (todayElement) {
-//         todayElement.classList.add("todays-date");
-//     }
-// }
-// addClassNameToTodaysDate();
-// console.log(calendar.tasks);
