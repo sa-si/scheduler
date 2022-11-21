@@ -24,7 +24,11 @@ class CalendarWeekController extends Controller
 
         $calendar = new CalendarView($carbon, $days);
         $form_path = url(route('form'));
+        $current_path = parse_url(url(route('week')), PHP_URL_PATH);
+        $calendar_type = substr($current_path, 1);
+        $previous = $carbon->subWeek()->format('Y/n/j');
+        $next = $carbon->addWeek()->format('Y/n/j');
 
-        return view('calendar.day', compact('calendar', 'form_path'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next'));
     }
 }

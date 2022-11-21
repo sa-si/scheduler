@@ -2,7 +2,7 @@
 
 @section('content')
 <a href="">
-    << /a>
+    <</a>
         <a href="">></a>
         <a href="">週</a>
         <a href="">月</a>

@@ -24,9 +24,10 @@ class CalendarDayController extends Controller
         $form_path = url(route('form'));
         $current_path = parse_url(url(route('day')), PHP_URL_PATH);
         $calendar_type = substr($current_path, 1);
-        // dd($calendar_type);
+        $previous = $carbon->subDay()->format('Y/n/j');
+        $next = $carbon->addDay()->format('Y/n/j');
 
-        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next'));
     }
 
     public function form(Request $request) {

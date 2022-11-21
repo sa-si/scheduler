@@ -28,10 +28,13 @@ class CalendarYearController extends Controller
 
             $start_month = $start_month->addMonth();
         }
-        // dd($days);
         $calendar = new CalendarView($carbon, $days);
         $form_path = url(route('form'));
+        $current_path = parse_url(url(route('year')), PHP_URL_PATH);
+        $calendar_type = substr($current_path, 1);
+        $previous = $carbon->subYearNoOverflow()->format('Y/n/j');
+        $next = $carbon->addYearNoOverflow()->format('Y/n/j');
 
-        return view('calendar.day', compact('calendar', 'form_path'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next'));
     }
 }
