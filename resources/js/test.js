@@ -379,7 +379,10 @@ function returnErrorMessagesIfFormHasInputErrors(form_data) {
         error_messages["one_day_end_time"] = "終了時間を正しく入力してください";
     }
 
-    if (field_one_day_start_time === field_one_day_end_time) {
+    if (
+        field_one_day_start_time === field_one_day_end_time ||
+        field_one_day_start_time > field_one_day_end_time
+    ) {
         error_messages["one_day_start_time"] = "時間を正しく入力してください";
     }
 
@@ -387,7 +390,7 @@ function returnErrorMessagesIfFormHasInputErrors(form_data) {
 }
 
 function submitForm() {
-    let formData = new FormData(document.forms.task);
+    const formData = new FormData(document.forms.task);
     const url = document.getElementById("task_id")
         ? "/planning-task-update"
         : "/planning-task-input";
@@ -501,7 +504,7 @@ function getForm(replace, date, time, target, target_global) {
             var data = xhr.responseText;
             var elem = document.getElementById(replace);
             elem.innerHTML = data;
-
+            console.log("ここまで処理進んでる？");
             MicroModal.show("modal-1", {
                 disableFocus: true,
                 onShow: function (modal) {

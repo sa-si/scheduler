@@ -87,9 +87,9 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <button>3本線メニューアイコン</button>
             <a href="" class="">logo</a>
-            <a href="">今日ボタン</a>
+            <a href="">今日ボタン{{ route($calendar_type) }}</a>
             <a href="">
-                << /a>
+                <</a>
                     <a href="">></a>
                     <p>2022年9月23日</p>
                     <a href="">日</a>

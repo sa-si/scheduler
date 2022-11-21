@@ -22,8 +22,11 @@ class CalendarDayController extends Controller
 
         $calendar = new CalendarView($carbon, $days);
         $form_path = url(route('form'));
+        $current_path = parse_url(url(route('day')), PHP_URL_PATH);
+        $calendar_type = substr($current_path, 1);
+        // dd($calendar_type);
 
-        return view('calendar.day', compact('calendar', 'form_path'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type'));
     }
 
     public function form(Request $request) {

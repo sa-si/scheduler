@@ -1,3 +1,4 @@
+@include('components.data-list')
 <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
     <form action="{{ route('task') }}" method="POST" name="task">
         @csrf
@@ -16,18 +17,22 @@
                     <input type="text" name="name" value="{{ old('name', $task ? $task->name : '') }}"
                         placeholder="タスク名を入力" id="first_focus">
                     <br><br>
+                    <div class="alert alert-danger display-none" id="error-form-task-field-name"></div>
                     {{-- 説明 --}}
                     <textarea name="description" id="" cols="30" rows="10"
                         placeholder="説明を入力">{{ old('description', $task ? $task->description : '') }}</textarea>
                     <br><br>
+                    <div class="alert alert-danger display-none" id="error-form-task-field-description"></div>
                     {{-- 日 --}}
                     <input type="date" name="date" value="{{ old('date', $task ? $task->date : '1800-01-01') }}">
                     {{-- 開始時間 --}}
-                    <input type="time" name="one_day_start_time"
-                        value="{{ old('one_day_start_time', $task ? $task->start_time : '00:00') }}">
+                    <input type="time" name="one_day_start_time" min="00:00" max="23:45" list="data-list" step="900" value="{{ old('one_day_start_time', $task ? $task->start_time : '00:00') }}">
                     {{-- 終了時間 --}}
-                    <input type="time" name="one_day_end_time"
-                        value="{{ old('one_day_end_time', $task ? substr($task->end_time, 11, 5) : '00:00') }}">
+                    <input type="time" name="one_day_end_time" min="00:00" max="23:45" list="data-list" step="900" value="{{ old('one_day_end_time', $task ? substr($task->end_time, 11, 5) : '00:00') }}">
+                    <br><br>
+                    <div class="alert alert-danger display-none" id="error-form-task-field-date"></div>
+                    <div class="alert alert-danger display-none" id="error-form-task-field-one_day_start_time"></div>
+                    <div class="alert alert-danger display-none" id="error-form-task-field-one_day_end_time"></div>
                     <div class="js_initial-disable-wrapper">
                         <input id="old_project" type="radio" name="project_choice" value="old"
                             onclick="globalFunctions.toggleEnableAndDisable(['select_project'], ['create_project'])" {{

@@ -147,7 +147,6 @@ class PlanningTaskController extends Controller
 
     public function update(Request $request)
     {
-        return response()->json(['method' => 'update']);
         $request->validate([
             'name' => 'required|string|max:255',
             'description'  => 'required|string|max:5000',
@@ -157,6 +156,11 @@ class PlanningTaskController extends Controller
             'project' => 'nullable|integer',
             'tags.*.*' => 'nullable|integer',
         ]);
+
+        $task_time_duplication_check_result = PlanningTask::taskTimeDuplicationCheck($request->date, $request->one_day_start_time, $request->one_day_end_time, $request->task_id);
+        if ($task_time_duplication_check_result) {
+            return ['time_duplicated_notification_message' => '既にその時間には別のタスクが登録されています'];
+        }
 
         $task = PlanningTask::find($request->task_id);
 
@@ -259,6 +263,7 @@ class PlanningTaskController extends Controller
             // }
         });
 
+        return ['update_success' => 'タスク更新成功'];
         // return redirect()->route('p-task.update', ['id' => $id ]);
     }
 

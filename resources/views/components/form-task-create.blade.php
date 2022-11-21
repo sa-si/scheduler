@@ -16,9 +16,6 @@
                     <input type="text" name="name" value="{{ old('name') }}" placeholder="タスク名を入力" id="first_focus">
                     <br><br>
                     <div class="alert alert-danger display-none" id="error-form-task-field-name"></div>
-                    {{-- @error('name')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror --}}
                     {{-- 説明 --}}
                     <textarea name="description" id="" cols="30" rows="10"
                         placeholder="説明を入力">{{ old('description') }}</textarea>
