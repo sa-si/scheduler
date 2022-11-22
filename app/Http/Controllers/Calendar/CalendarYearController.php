@@ -10,7 +10,7 @@ use Ramsey\Uuid\Type\Integer;
 
 class CalendarYearController extends Controller
 {
-    public function index(Request $request, ?int $year = null, int $month = 1, ?int $day = 1){
+    public function index(Request $request, ?int $year = null, ?int $month = null, ?int $day = null){
         $carbon = CarbonImmutable::createSafe($year, $month, $day);
         $start_month = $carbon->month(1)->day(1);
         $last_month = $carbon->month(12)->day(31);

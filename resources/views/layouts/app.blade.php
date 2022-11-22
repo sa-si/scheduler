@@ -89,7 +89,7 @@
             <button>3本線メニューアイコン</button>
             <a href="" class="">logo</a>
             @isset ($calendar_type)
-            <a href="">今日ボタン</a>
+            <a href="{{ route($calendar_type) }}">今日ボタン</a>
             <a href="{{ route($calendar_type).'/'.$previous }}"><</a>
             <a href="{{ route($calendar_type).'/'.$next }}">></a>
             <p>2022年9月23日</p>

@@ -14,10 +14,11 @@ use Illuminate\Support\Facades\Auth;
 
 class CalendarDayController extends Controller
 {
-    public function index(Request $request, ?int $year = null, int $month = 1, int $day = 1){
+    public function index(Request $request, ?int $year = null, ?int $month = null, ?int $day = null){
         // $date = $year . $month . $day;
         // $carbon = new CarbonImmutable($date);
         $carbon = CarbonImmutable::createSafe($year, $month, $day);
+        // dd($carbon);
         $days = [$carbon];
 
         $calendar = new CalendarView($carbon, $days);
@@ -55,7 +56,7 @@ class CalendarDayController extends Controller
         $date = $request->date;
         if ($request->form) {
             $start_time = '00:00';
-            $end_time = '00:00';
+            $end_time = '00:15';
         } else {
             $start_time = $request->time;
             $end_time = date('H:i', strtotime("${start_time} +15 min"));

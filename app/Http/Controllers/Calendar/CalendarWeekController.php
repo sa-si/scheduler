@@ -9,7 +9,7 @@ use Carbon\CarbonImmutable;
 
 class CalendarWeekController extends Controller
 {
-    public function index(Request $request, ?int $year = null, int $month = 1, int $day = 1){
+    public function index(Request $request, ?int $year = null, ?int $month = null, ?int $day = null){
         // $date = $year . $month . $day;
         // $carbon = new CarbonImmutable($date);
         $carbon = CarbonImmutable::createSafe($year, $month, $day);
