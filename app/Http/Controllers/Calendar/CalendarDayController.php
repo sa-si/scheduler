@@ -29,7 +29,11 @@ class CalendarDayController extends Controller
         $next = $carbon->addDay()->format('Y/n/j');
         $header_date = $carbon->format('Y年n月j日');
 
-        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date'));
+        $request_path_split = explode("/", $request->path());
+        array_shift($request_path_split);
+        $request_path = implode('/', $request_path_split);
+
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date', 'request_path'));
     }
 
     public function form(Request $request) {

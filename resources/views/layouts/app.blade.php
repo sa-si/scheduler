@@ -90,13 +90,13 @@
             <a href="" class="">logo</a>
             @isset ($calendar_type)
             <a href="{{ route($calendar_type) }}">今日ボタン</a>
-            <a href="{{ route($calendar_type).'/'.$previous }}"><</a>
-            <a href="{{ route($calendar_type).'/'.$next }}">></a>
+            <a href="{{ route($calendar_type) . '/' . $previous }}"><</a>
+            <a href="{{ route($calendar_type) . '/' . $next }}">></a>
             <p>{{ $header_date }}</p>
-            <a href="">日</a>
-            <a href="">週</a>
-            <a href="">月</a>
-            <a href="">年</a>
+            <a href="{{ route('day') . '/' . $request_path }}">日</a>
+            <a href="{{ route('week') . '/' . $request_path }}">週</a>
+            <a href="{{ route('month') . '/' . $request_path }}">月</a>
+            <a href="{{ route('year') . '/' . $request_path }}">年</a>
             @endisset
             <div>
                 <a href="">プロフィール</a>
