@@ -29,7 +29,8 @@ class CalendarMonthController extends Controller
         $calendar_type = substr($current_path, 1);
         $previous = $carbon->subMonthNoOverflow()->format('Y/n/j');
         $next = $carbon->addMonthNoOverflow()->format('Y/n/j');
+        $header_date = $carbon->format('Y年n月');
 
-        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date'));
     }
 }

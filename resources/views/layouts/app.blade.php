@@ -92,7 +92,7 @@
             <a href="{{ route($calendar_type) }}">今日ボタン</a>
             <a href="{{ route($calendar_type).'/'.$previous }}"><</a>
             <a href="{{ route($calendar_type).'/'.$next }}">></a>
-            <p>2022年9月23日</p>
+            <p>{{ $header_date }}</p>
             <a href="">日</a>
             <a href="">週</a>
             <a href="">月</a>

@@ -34,7 +34,8 @@ class CalendarYearController extends Controller
         $calendar_type = substr($current_path, 1);
         $previous = $carbon->subYearNoOverflow()->format('Y/n/j');
         $next = $carbon->addYearNoOverflow()->format('Y/n/j');
+        $header_date = $carbon->format('Y年');
 
-        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date'));
     }
 }

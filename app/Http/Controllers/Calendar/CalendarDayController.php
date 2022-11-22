@@ -27,8 +27,9 @@ class CalendarDayController extends Controller
         $calendar_type = substr($current_path, 1);
         $previous = $carbon->subDay()->format('Y/n/j');
         $next = $carbon->addDay()->format('Y/n/j');
+        $header_date = $carbon->format('Y年n月j日');
 
-        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date'));
     }
 
     public function form(Request $request) {
