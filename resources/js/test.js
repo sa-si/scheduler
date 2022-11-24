@@ -867,3 +867,8 @@ if (
 ) {
     eventRegistrationInMonthlyAndYear();
 }
+
+js_sidebar_toggle.addEventListener("click", function () {
+    const sidebar = document.getElementById("js_sidebar");
+    sidebar.classList.toggle("display-none");
+});

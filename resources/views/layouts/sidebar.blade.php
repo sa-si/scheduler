@@ -4,11 +4,11 @@
             スケジュール
         </a>
     </div>
-    <div>
+    {{-- <div>
         <a href="{{ route('analysis') }}" class="block">
             分析画面
         </a>
-    </div>
+    </div> --}}
     <div>
         <a href="{{ route('trash-can') }}" class="block">
             ゴミ箱

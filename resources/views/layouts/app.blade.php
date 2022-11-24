@@ -21,168 +21,50 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/calendar.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/header.css') }}" rel="stylesheet">
 </head>
 
 <body>
     <div id="app">
-        {{-- ヘッダー --}}
-        {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+        @auth
+            <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+                <button class="hamburger" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                    id="js_sidebar_toggle">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                        @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                        </li>
-                        @endif
-
-                        @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
-                        @endif
-                        @else
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav> --}}
-        {{-- end ヘッダー --}}
-
-        {{-- ログインヘッダー --}}
-        @auth
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <button>3本線メニューアイコン</button>
-            <a href="{{ route('month') }}" class="">{{ config('app.name', 'Laravel') }}</a>
-            @isset ($calendar_type)
-            <a href="{{ route($calendar_type) }}">今日ボタン</a>
-            <a href="{{ route($calendar_type) . '/' . $previous }}">
-                << /a>
-                    <a href="{{ route($calendar_type) . '/' . $next }}">></a>
+                <a href="{{ route('month') }}" class="">{{ config('app.name', 'Laravel') }}</a>
+                @isset($calendar_type)
+                    <a href="{{ route($calendar_type) }}">今日ボタン</a>
+                    <a href="{{ route($calendar_type) . '/' . $previous }}">&lt;</a>
+                    <a href="{{ route($calendar_type) . '/' . $next }}">&gt;</a>
                     <p>{{ $header_date }}</p>
                     <a href="{{ route('day') . '/' . $request_path }}">日</a>
                     <a href="{{ route('week') . '/' . $request_path }}">週</a>
                     <a href="{{ route('month') . '/' . $request_path }}">月</a>
                     <a href="{{ route('year') . '/' . $request_path }}">年</a>
-                    @endisset
-                    <div>
-                        <a href="">プロフィール</a>
-                        {{-- <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                    document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li> --}}
-                        {{-- <a href="">ログアウト</a> --}}
-                        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                @endisset
+                <div>
+                    <a href="{{ route('user.edit') }}">プロフィール</a>
+                    <a class="dropdown-item" href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
                         document.getElementById('logout-form').submit();">
-                            {{ __('ログアウト') }}
-                        </a>
-
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-
-                    </div>
-                    {{-- <div class="container">
-                        <a class="navbar-brand" href="{{ url('/') }}">
-                            {{ config('app.name', 'Laravel') }}
-                        </a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <!-- Left Side Of Navbar -->
-                            <ul class="navbar-nav me-auto">
-
-                            </ul>
-
-                            <!-- Right Side Of Navbar -->
-                            <ul class="navbar-nav ms-auto">
-                                <!-- Authentication Links -->
-                                @guest
-                                @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                                @endif
-
-                                @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                                @endif
-                                @else
-                                <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        {{ Auth::user()->name }}
-                                    </a>
-
-
-                                </li>
-                                @endguest
-                            </ul>
-                        </div>
-                    </div> --}}
-        </nav>
+                        {{ __('ログアウト') }}
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                </div>
+            </nav>
         @endauth
-        {{-- end ログインヘッダー --}}
-        {{-- <div class="row"> --}}
-            @include('layouts.sidebar')
+        <div class="flex">
+            <div class="sidebar display-none" id="js_sidebar">
+                @include('layouts.sidebar')
+            </div>
             <main class="py-4">
                 @yield('content')
             </main>
-            {{--
-        </div> --}}
+        </div>
     </div>
 </body>
 
