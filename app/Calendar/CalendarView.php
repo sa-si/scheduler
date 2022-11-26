@@ -53,7 +53,7 @@ class CalendarView {
 
                     $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $start_time .'">';
                     if (isset($tasks[$day][$start_time])) {
-                        $html[] = '<p id="task_name">' . $tasks[$day][$start_time]['name'] . '</p>';
+                        $html[] = '<p>' . $tasks[$day][$start_time]['name'] . '</p>';
                     }
                     $html[] = "</div>";
 
@@ -62,7 +62,7 @@ class CalendarView {
 
                     $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $after_15_min .'">';
                     if (isset($tasks[$day][$after_15_min])) {
-                        $html[] =  '<p id="task_name">' . $tasks[$day][$after_15_min]['name'] . '</p>';
+                        $html[] =  '<p>' . $tasks[$day][$after_15_min]['name'] . '</p>';
                     }
                     $html[] = "</div>";
 
@@ -71,7 +71,7 @@ class CalendarView {
 
                     $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $after_30_min .'">';
                     if (isset($tasks[$day][$after_30_min])) {
-                        $html[] =  '<p id="task_name">' . $tasks[$day][$after_30_min]['name'] . '</p>';
+                        $html[] =  '<p>' . $tasks[$day][$after_30_min]['name'] . '</p>';
                     }
                     $html[] = "</div>";
 
@@ -80,7 +80,7 @@ class CalendarView {
 
                     $html[] = '<div class="js_form" data-date="' . $day . '" data-time="' . $after_45_min .'">';
                     if (isset($tasks[$day][$after_45_min])) {
-                        $html[] =  '<p id="task_name">' . $tasks[$day][$after_45_min]['name'] . '</p>';
+                        $html[] =  '<p>' . $tasks[$day][$after_45_min]['name'] . '</p>';
                     }
                     $html[] = "</div>";
 
