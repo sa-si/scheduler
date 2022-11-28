@@ -15,12 +15,10 @@ class CalendarView {
     const AFTER_30_MIN_NUM = 30;
     const AFTER_45_MIN_NUM = 45;
 
-    public function __construct(CarbonImmutable $carbon, array $days = [], bool $is_input = true)
+    public function __construct(CarbonImmutable $carbon, array $days = [])
     {
         $this->carbon = $carbon;
         $this->days = $days;
-        // $c = new CarbonImmutable('2022-10-01');
-        // dd($this->days);
     }
 
     public function render() {

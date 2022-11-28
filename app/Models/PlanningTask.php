@@ -27,14 +27,6 @@ class PlanningTask extends Model
         return $this->belongsTo(Project::class);
     }
 
-//    public static function getTask(string $day = null, string $start_time = '', $end_time = '') {
-//        //$dayのformat(Ymi)版とモデルのdateが一致かつ$timeとモデルのstart_timeが〇〇:00 or 〇〇:30で、orderByでstart_timeが若い方を先頭に.
-//        if ($day) {
-//          $task = optional(PlanningTask::where('user_id', Auth::id())->where('date', $day)->where('start_time', $start_time)->first());
-//          return $task;
-//        }
-//    }
-
     public function getStartTimeAttribute($value)
     {
         return date('H:i', strtotime($value));

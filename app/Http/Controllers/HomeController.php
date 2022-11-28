@@ -43,18 +43,4 @@ class HomeController extends Controller
 
         return redirect()->route('user.edit');
     }
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
-    {
-        return view('day-calendar');
-    }
-
-    public function home()
-    {
-        return view('home');
-    }
 }
