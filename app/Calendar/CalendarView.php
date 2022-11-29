@@ -133,7 +133,7 @@ class CalendarView {
                         }
                         $html[] = '<td class="">';
                         $html[] = '<a href="/replaced-task-display/' . $date . '" class="date js_task-list' . $this->getClassNameIfDateTaskExists($date, $task_dates) . $this->getClassNameIfToday($date) . '" data-date="' . $date . '">';
-                        $html[] = $this->getDay($start_day);
+                        $html[] = $this->getDate($start_day);
                         $html[] = '</a>';
                         $html[] = '</td>';
                         $start_day = $start_day->addDay();
@@ -176,8 +176,8 @@ class CalendarView {
                 // 1週間分の日付レンダリング要素
                 $html[] = '<tr>';
                 while ($start_day->lte($last_day)) {
-                    $html[] = '<td class="' . $this->getClassName($start_day) . '">';
-                    $html[] = '<p class="date" data-date="' . $start_day->format('Y-m-d') . '">' . $this->getDay($start_day) . '</p>';
+                    $html[] = '<td class="' . $this->getDayClassName($start_day) . '">';
+                    $html[] = '<p class="date" data-date="' . $start_day->format('Y-m-d') . '">' . $this->getDate($start_day) . '</p>';
                     $key =  $start_day->format('Y-m-d');
                     if (isset($tasks[$key])) {
                         $display_tasks = array_slice($tasks[$key], 0, 2);
@@ -218,7 +218,7 @@ class CalendarView {
         return implode("", $html);
     }
 
-    private function getDay(CarbonImmutable $day) {
+    private function getDate(CarbonImmutable $day) {
         if ($day->day === 1 || $day->isLastOfMonth()) {
             return $day->format('n月j日');
         }
@@ -226,7 +226,7 @@ class CalendarView {
         return $day->day;
     }
 
-    private function getClassName(CarbonImmutable $day) {
+    private function getDayClassName(CarbonImmutable $day) {
         if ($day->month !== $this->days[0]->month) {
             return 'other-month' . ' ' . strtolower($day->format('D'));
         }
