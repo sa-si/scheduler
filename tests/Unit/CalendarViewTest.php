@@ -57,4 +57,20 @@ class CalendarViewTest extends TestCase
         $this->assertSame('other-month sat', $this->doMethod('getDayClassName', [new CarbonImmutable("2022-10-29")]));
         $this->assertSame('other-month sun', $this->doMethod('getDayClassName', [new CarbonImmutable("2022-10-30")]));
     }
+
+    public function test_class_name_if_today()
+    {
+        CarbonImmutable::setTestNow(new CarbonImmutable('2022-11-29'));
+        $this->assertSame(' todays-date', $this->doMethod('getClassNameIfToday', ["2022-11-29"]));
+    }
+
+    public function test_get_class_name_if_date_task_exists()
+    {
+        $this->assertSame(' tasks-include', $this->doMethod('getClassNameIfDateTaskExists', ["2022-11-29", ["2022-11-29", "2022-11-30"]]));
+    }
+
+    public function test_render()
+    {
+        $this->assertSame(' tasks-include', $this->doMethod('render', ["2022-11-29", ["2022-11-29", "2022-11-30"]]));
+    }
 }

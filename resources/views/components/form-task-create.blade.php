@@ -1,6 +1,6 @@
 @include('components.data-list')
 <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
-    <form action="{{ route('task') }}" method="POST" name="task">
+    <form action="{{ route('p-task.store') }}" method="POST" name="task">
         @csrf
         <div class="modal__overlay" tabindex="-1" id="testes" data-close-confirm="close-confirm">
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
@@ -13,37 +13,39 @@
                 </header>
                 <main class="modal__content" id="modal-1-content">
                     {{-- タスク名 --}}
-                    <input type="text" name="name" value="{{ old('name') }}" placeholder="タスク名を入力" id="first_focus">
+                    <input type="text" name="name" value="{{ old('name') }}" placeholder="タスク名を入力"
+                        id="first_focus">
                     <br><br>
                     <div class="alert alert-danger display-none" id="error-form-task-field-name"></div>
                     {{-- 説明 --}}
-                    <textarea name="description" id="" cols="30" rows="10"
-                        placeholder="説明を入力">{{ old('description') }}</textarea>
+                    <textarea name="description" id="" cols="30" rows="10" placeholder="説明を入力">{{ old('description') }}</textarea>
                     <br><br>
                     <div class="alert alert-danger display-none" id="error-form-task-field-description"></div>
                     {{-- 日 --}}
 
                     <input type="date" name="date" value="{{ old('date', $date) }}">
                     {{-- 開始時間 --}}
-                    <input type="time" name="one_day_start_time" min="00:00" max="23:45" list="data-list" step="900" value="{{ old('one_day_start_time', $start_time) }}">~
+                    <input type="time" name="one_day_start_time" min="00:00" max="23:45" list="data-list"
+                        step="900" value="{{ old('one_day_start_time', $start_time) }}">~
                     {{-- 終了時間 --}}
-                    <input type="time" name="one_day_end_time" min="00:00" max="23:45" list="data-list" step="900" value="{{ old('one_day_end_time', $end_time) }}">
+                    <input type="time" name="one_day_end_time" min="00:00" max="23:45" list="data-list"
+                        step="900" value="{{ old('one_day_end_time', $end_time) }}">
                     <br><br>
                     <div class="alert alert-danger display-none" id="error-form-task-field-date"></div>
                     <div class="alert alert-danger display-none" id="error-form-task-field-one_day_start_time"></div>
                     <div class="alert alert-danger display-none" id="error-form-task-field-one_day_end_time"></div>
                     <div class="js_initial-disable-wrapper">
                         <input id="old_project" type="radio" name="project_choice" value="old"
-                            onclick="globalFunctions.toggleEnableAndDisable(['select_project'], ['create_project'])" {{
-                            old('project_choice', 'old' )==='old' ? 'checked' : '' }}>
+                            onclick="globalFunctions.toggleEnableAndDisable(['select_project'], ['create_project'])"
+                            {{ old('project_choice', 'old') === 'old' ? 'checked' : '' }}>
                         <label for="old_project">既存プロジェクト選択</label>
                         <div id="select_project" class="js_initial-disable">
                             <select name="project">
-                                <option value="{{ $registered_project->id ?? '' }}">{{ $registered_project->name ??
-                                    '-------------' }}
+                                <option value="{{ $registered_project->id ?? '' }}">
+                                    {{ $registered_project->name ?? '-------------' }}
                                 </option>
                                 @foreach ($projects as $project)
-                                <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                    <option value="{{ $project->id }}">{{ $project->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -51,8 +53,8 @@
                     <br><br>
                     <div class="js_initial-disable-wrapper">
                         <input id="new_project" type="radio" name="project_choice" value="new"
-                            onclick="globalFunctions.toggleEnableAndDisable(['create_project'], ['select_project'])" {{
-                            old('project_choice')=='new' ? 'checked' : '' }}>
+                            onclick="globalFunctions.toggleEnableAndDisable(['create_project'], ['select_project'])"
+                            {{ old('project_choice') == 'new' ? 'checked' : '' }}>
                         <label for="new_project">新規プロジェクト作成</label>
                         <div id="create_project" class="js_initial-disable">
                             <input type="text" name="project" value="{{ old('project') }}" placeholder="プロジェクト名を入力"
@@ -61,10 +63,9 @@
                     </div>
                     <br><br>
                     @foreach ($tags as $tag)
-                    <input id="{{ $tag->id }}" type="checkbox" name="tags[]" value="{{ $tag->id }}" {{
-                        in_array($tag->id,
-                    $associated_tags) ? 'checked' : '' }}>
-                    <label for="{{ $tag->id }}">{{ $tag->name }}</label>
+                        <input id="{{ $tag->id }}" type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                            {{ in_array($tag->id, $associated_tags) ? 'checked' : '' }}>
+                        <label for="{{ $tag->id }}">{{ $tag->name }}</label>
                     @endforeach
                     <input type="text" name="new_tag" value="" placeholder="タグ名を入力">
                     <br><br>

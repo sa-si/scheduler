@@ -64,7 +64,7 @@ class PlanningTask extends Model
         return $tasks;
     }
 
-    public static function getDatesOfTasksForOneYear(string $year) {
+    public static function getDatesOfTasksForOneYear(int $year) {
         $array_type_task_dates = PlanningTask::distinct()->select('date')->where('user_id', Auth::id())->where('date', 'like', $year . '%')->orderBy('date', 'ASC')->get()->toArray();
 
         $task_dates = [];
@@ -94,11 +94,4 @@ class PlanningTask extends Model
             return false;
         }
     }
-    // public static function returnClassNameIfToday(string $day) {
-    //     if (DB::table('planning_tasks')->where('user_id', Auth::id())->where('date', $day)->whereNull('deleted_at')->exists()) {
-    //         return ' tasks-include';
-    //     } else {
-    //         return '';
-    //     }
-    // }
 }

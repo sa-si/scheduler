@@ -18,8 +18,6 @@ class CalendarDayController extends Controller
         // $date = $year . $month . $day;
         // $carbon = new CarbonImmutable($date);
         $carbon = CarbonImmutable::createSafe($year, $month, $day);
-        dd($carbon->day);
-        // dd($carbon);
         $days = [$carbon];
 
         $calendar = new CalendarView($carbon, $days);

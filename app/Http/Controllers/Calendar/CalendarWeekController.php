@@ -11,6 +11,7 @@ class CalendarWeekController extends Controller
 {
     public function index(Request $request, ?int $year = null, ?int $month = null, ?int $day = null){
         $carbon = CarbonImmutable::createSafe($year, $month, $day);
+
         $start_day = $carbon->startOfWeek();
         $last_day = $carbon->endOfWeek();
         $days = [];
@@ -19,7 +20,6 @@ class CalendarWeekController extends Controller
             $days[] = $start_day;
             $start_day = $start_day->addDay(1);
         }
-
         $calendar = new CalendarView($carbon, $days);
         $form_path = url(route('form'));
         $current_path = parse_url(url(route('week')), PHP_URL_PATH);
