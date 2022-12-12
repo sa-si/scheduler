@@ -257,21 +257,27 @@ class CalendarView {
             $html[] = '<tbody>';
 
             $tasks = PlanningTask::getTasks($this->days);
-            $start_day = $this->days[0]->startOfWeek();
-            $last_day = $this->days[0]->endOfWeek();
-            $fifth_weekend = $start_day->addDays(34)->toDateString();
-            $end_of_month = $this->days[0]->endOfMonth()->toDateString();
+            // やっぱり、週単位で管理したほうがいいな！
+            // $start_day = $this->days[0]->startOfWeek();
+            // $last_day = $this->days[0]->endOfWeek();
+            $first_day = $this->days[0]->firstOfMonth();
+            $last_day = $this->days[0]->lastOfMonth();
+            // $fifth_weekend = $start_day->addDays(34)->toDateString();
+            // $end_of_month = $this->days[0]->endOfMonth()->toDateString();
 
-            if ($fifth_weekend > $end_of_month || $fifth_weekend === $end_of_month) {
-                $num_weeks_to_display = 5;
-            } elseif ($fifth_weekend < $end_of_month) {
-                $num_weeks_to_display = 6;
-            }
-
-            for ($i = 0; $i < $num_weeks_to_display; $i++) {
+            // if ($fifth_weekend > $end_of_month || $fifth_weekend === $end_of_month) {
+            //     $num_weeks_to_display = 5;
+            // } elseif ($fifth_weekend < $end_of_month) {
+            //     $num_weeks_to_display = 6;
+            // }
+            // calendarアプリでは、
+            while($first_day->lte($last_day)){
+            // for ($i = 0; $i < $num_weeks_to_display; $i++) {
                 // 1週間分の日付レンダリング要素
+                $start_day = $first_day->startOfWeek();
+                $end_day = $first_day->endOfWeek();
                 $html[] = '<tr>';
-                while ($start_day->lte($last_day)) {
+                while ($start_day->lte($end_day)) {
                     $html[] = '<td class="' . $this->getDayClassName($start_day) . '">';
                     $html[] = '<p class="date" data-date="' . $start_day->format('Y-m-d') . '">' . $this->getDate($start_day) . '</p>';
                     $key =  $start_day->format('Y-m-d');
@@ -304,7 +310,7 @@ class CalendarView {
                     $start_day = $start_day->addDay();
                 }
                 $html[] = '</tr>';
-                $last_day = $last_day->addDays(7);
+                $first_day = $first_day->addDays(7);
             }
 
             $html[] = '</tbody>';

@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use App\Calendar\CalendarView;
 use Carbon\CarbonImmutable;
+use App\Models\PlanningTask;
 
 class CalendarViewTest extends TestCase
 {
@@ -69,8 +70,9 @@ class CalendarViewTest extends TestCase
         $this->assertSame(' tasks-include', $this->doMethod('getClassNameIfDateTaskExists', ["2022-11-29", ["2022-11-29", "2022-11-30"]]));
     }
 
-    public function test_render()
-    {
-        $this->assertSame(' tasks-include', $this->doMethod('render', ["2022-11-29", ["2022-11-29", "2022-11-30"]]));
-    }
+    // public function test_render()
+    // {
+    //     $this->assertSame(' tasks-include', $this->doMethod('render', ["2022-11-29", ["2022-11-29", "2022-11-30"]]));
+    // }
+
 }
