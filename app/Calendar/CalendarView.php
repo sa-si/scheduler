@@ -261,7 +261,7 @@ class CalendarView {
             // $start_day = $this->days[0]->startOfWeek();
             // $last_day = $this->days[0]->endOfWeek();
             $first_day = $this->days[0]->firstOfMonth();
-            $last_day = $this->days[0]->lastOfMonth();
+            $last_day = $this->days[0]->lastOfMonth()->endOfWeek();
             // $fifth_weekend = $start_day->addDays(34)->toDateString();
             // $end_of_month = $this->days[0]->endOfMonth()->toDateString();
 
@@ -319,6 +319,73 @@ class CalendarView {
 
         return implode("", $html);
     }
+
+    // public function renderHeaderCalendar() {
+    //     $html = [];
+    //     // 月カレンダービュー
+    //     $html[] = '<table>';
+    //     $html[] = '<thead>';
+    //     $html[] = '<tr>';
+    //     $html[] = '<th>月</th>';
+    //     $html[] = '<th>火</th>';
+    //     $html[] = '<th>水</th>';
+    //     $html[] = '<th>木</th>';
+    //     $html[] = '<th>金</th>';
+    //     $html[] = '<th>土</th>';
+    //     $html[] = '<th>日</th>';
+    //     $html[] = '</tr>';
+    //     $html[] = '</thead>';
+    //     $html[] = '<tbody>';
+
+    //     $first_day = $this->days[0]->firstOfMonth();
+    //     $last_day = $this->days[0]->lastOfMonth();
+
+    //     while($first_day->lte($last_day)){
+    //         // 1週間分の日付レンダリング要素
+    //         $start_day = $first_day->startOfWeek();
+    //         $end_day = $first_day->endOfWeek();
+    //         $html[] = '<tr>';
+    //         while ($start_day->lte($end_day)) {
+    //             $html[] = '<td class="' . $this->getDayClassName($start_day) . '">';
+    //             $html[] = '<p class="date" data-date="' . $start_day->format('Y-m-d') . '">' . $this->getDate($start_day) . '</p>';
+    //             // $key =  $start_day->format('Y-m-d');
+    //             // if (isset($tasks[$key])) {
+    //             //     $display_tasks = array_slice($tasks[$key], 0, 2);
+    //             //     if (count($display_tasks) === 1) {
+    //             //         foreach ($display_tasks as $task) {
+    //             //             $html[] = '<div class="js_form" data-date="' . $task['date'] . '" data-time="' . $task['start_time'] .'">';
+    //             //             $html[] = '<p>' . $task['name'] . '</p>';
+    //             //             $html[] = "</div>";
+    //             //         }
+    //             //         $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
+    //             //     } else {
+    //             //         foreach ($display_tasks as $task) {
+    //             //             $html[] = '<div class="js_form" data-date="' . $task['date'] . '" data-time="' . $task['start_time'] .'">';
+    //             //             $html[] = '<p>' . $task['name'] . '</p>';
+    //             //             $html[] = "</div>";
+    //             //         }
+    //             //         $other_tasks = array_slice($tasks[$key], 2);
+    //             //         $other_tasks_length = count($other_tasks);
+    //             //         if ($other_tasks_length !== 0){
+    //             //             $html[] = '<a href="/replaced-task-display/' . $key . '" class="js_task-list" data-date="' . $key . '">他' . $other_tasks_length . '件</a>';
+    //             //         }
+    //             //     }
+    //             // } else {
+    //             //     $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
+    //             //     $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
+    //             // }
+    //             $html[] = '</td>';
+    //             $start_day = $start_day->addDay();
+    //         }
+    //         $html[] = '</tr>';
+    //         $first_day = $first_day->addDays(7);
+    //     }
+
+    //     $html[] = '</tbody>';
+    //     $html[] = '</table>';
+
+    //     return implode("", $html);
+    // }
 
     private function getDate(CarbonImmutable $day) {
         if ($day->day === 1 || $day->isLastOfMonth()) {
