@@ -27,7 +27,7 @@
 <body>
     <div id="app">
         @auth
-            <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+            {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
                 <button class="hamburger" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
                     id="js_sidebar_toggle">
@@ -39,10 +39,10 @@
                     <a href="{{ route($calendar_type) . '/' . $previous }}">&lt;</a>
                     <a href="{{ route($calendar_type) . '/' . $next }}">&gt;</a>
                     <p>{{ $header_date }}</p>
-                    <a href="{{ route('day') . '/' . $request_path }}">日</a>
-                    <a href="{{ route('week') . '/' . $request_path }}">週</a>
-                    <a href="{{ route('month') . '/' . $request_path }}">月</a>
-                    <a href="{{ route('year') . '/' . $request_path }}">年</a>
+                    <a href="{{ route('day') . '/' . $request_date_path }}">日</a>
+                    <a href="{{ route('week') . '/' . $request_date_path }}">週</a>
+                    <a href="{{ route('month') . '/' . $request_date_path }}">月</a>
+                    <a href="{{ route('year') . '/' . $request_date_path }}">年</a>
                 @endisset
                 <div>
                     <a href="{{ route('user.edit') }}">プロフィール</a>
@@ -55,9 +55,9 @@
                         @csrf
                     </form>
                 </div>
-            </nav>
+            </nav> --}}
 
-            {{-- <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+            <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
                 <div class="container-fluid">
                     <a class="navbar-brand me-5" href="#">Scheduler</a>
                     <ul class="navbar-nav">
@@ -136,12 +136,12 @@
                         </ul>
                     </div>
                 </div>
-            </nav> --}}
+            </nav>
         @endauth
         <div class="flex">
-            <div class="sidebar display-none" id="js_sidebar">
+            {{-- <div class="sidebar display-none" id="js_sidebar">
                 @include('layouts.sidebar')
-            </div>
+            </div> --}}
             <main class="py-4">
                 @yield('content')
             </main>

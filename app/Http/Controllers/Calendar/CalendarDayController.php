@@ -22,17 +22,15 @@ class CalendarDayController extends Controller
 
         $calendar = new CalendarView($carbon, $days);
         $form_path = url(route('form'));
-        $current_path = parse_url(url(route('day')), PHP_URL_PATH);
-        $calendar_type = substr($current_path, 1);
         $previous = $carbon->subDay()->format('Y/n/j');
         $next = $carbon->addDay()->format('Y/n/j');
         $header_date = $carbon->format('Y年n月j日');
 
         $request_path_split = explode("/", $request->path());
-        array_shift($request_path_split);
-        $request_path = implode('/', $request_path_split);
+        $calendar_type = array_shift($request_path_split);
+        $request_date_path = implode('/', $request_path_split);
 
-        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date', 'request_path'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date', 'request_date_path'));
     }
 
     public function form(Request $request) {
