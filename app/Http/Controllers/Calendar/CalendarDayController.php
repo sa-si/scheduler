@@ -14,23 +14,26 @@ use Illuminate\Support\Facades\Auth;
 
 class CalendarDayController extends Controller
 {
-    public function index(Request $request, ?int $year = null, ?int $month = null, ?int $day = null){
-        // $date = $year . $month . $day;
-        // $carbon = new CarbonImmutable($date);
+    public function index(Request $request, ?int $year = null, ?int $month = null, ?int $day = null) {
         $carbon = CarbonImmutable::createSafe($year, $month, $day);
+        // 日・週・月・年で変わる
         $days = [$carbon];
 
+        //一緒
         $calendar = new CalendarView($carbon, $days);
-        $form_path = url(route('form'));
+        // day.bladeに移動
+        // $form_path = url(route('form'));
+        // 日・週・月・年で変わる
         $previous = $carbon->subDay()->format('Y/n/j');
         $next = $carbon->addDay()->format('Y/n/j');
         $header_date = $carbon->format('Y年n月j日');
-
+        $header_calendar_date = $carbon->format('Y年n月');
+        //一緒
         $request_path_split = explode("/", $request->path());
         $calendar_type = array_shift($request_path_split);
         $request_date_path = implode('/', $request_path_split);
 
-        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date', 'request_date_path'));
+        return view('calendar.day', compact('calendar', 'calendar_type', 'previous', 'next', 'header_date', 'request_date_path', 'header_calendar_date'));
     }
 
     public function form(Request $request) {

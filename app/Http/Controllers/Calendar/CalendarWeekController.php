@@ -25,11 +25,12 @@ class CalendarWeekController extends Controller
         $previous = $carbon->subWeek()->format('Y/n/j');
         $next = $carbon->addWeek()->format('Y/n/j');
         $header_date = $carbon->format('Y年n月');
+        $header_calendar_date = $carbon->format('Y年n月');
 
         $request_path_split = explode("/", $request->path());
         $calendar_type = array_shift($request_path_split);
         $request_date_path = implode('/', $request_path_split);
 
-        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date', 'request_date_path'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date', 'request_date_path', 'header_calendar_date'));
     }
 }

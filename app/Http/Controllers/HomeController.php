@@ -23,9 +23,9 @@ class HomeController extends Controller
     }
 
     public function edit() {
-        $user = User::find(Auth::id());
+        $user_profile = User::find(Auth::id());
 
-        return view('profile', compact('user'));
+        return view('profile', compact('user_profile'));
     }
 
     public function update(Request $request) {

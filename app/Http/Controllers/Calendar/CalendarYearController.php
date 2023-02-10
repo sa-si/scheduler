@@ -34,6 +34,7 @@ class CalendarYearController extends Controller
         $next = $carbon->addYearNoOverflow()->format('Y/n/j');
         $header_date = $carbon->format('Y年');
 
+
         $request_path_split = explode("/", $request->path());
         $calendar_type = array_shift($request_path_split);
         $request_date_path = implode('/', $request_path_split);

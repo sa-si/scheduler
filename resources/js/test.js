@@ -152,107 +152,116 @@ document.addEventListener(
 );
 
 // parent_element -> DB登録したタスク名(p要素)を差し込む親div要素
-function replacedTaskDisplayInMonthlyCalendar(parent_element = "") {
+function replacedTaskDisplayInMonthlyCalendar(date) {
     // console.log("1つ目div", parent_element);
-    if (parent_element) {
-        let xhr = new XMLHttpRequest();
-        // 日時の値を取得 (2022-10-22, など)
-        const date = parent_element.getAttribute("data-date");
-        // タスク名(p要素)を差し込む親div要素の隣の親div要素
-        const first_element = document.querySelectorAll(
-            'div[class="js_form"][data-date="' + date + '"'
-        )[0];
+    let xhr = new XMLHttpRequest();
+    // 日時の値を取得 (2022-10-22, など)
+    // const date = parent_element.getAttribute("data-date");
+    // タスク名(p要素)を差し込む親div要素の隣の親div要素
+    // const first_element = document.querySelectorAll(
+    //     'div[class="js_form"][data-date="' + date + '"'
+    // )[0];
 
-        const second_element = document.querySelectorAll(
-            'div[class="js_form"][data-date="' + date + '"'
-        )[1];
-        // let second_parent_element;
-        // form_elements.forEach((form) => {
-        //     console.log("all", form);
-        //     if (form !== parent_element) {
-        //         second_parent_element = form;
-        //     }
-        // });
-        // console.log("2つ目div", second_parent_element);
-        xhr.open("GET", "/replaced-task-display/" + date, true);
-        xhr.responseType = "json";
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                // 以下、全体的に、新表示箇所の日付欄に対しての操作
-                //レスポンスjsonデータ(該当日のタスクをdbから取得)
-                const response = xhr.response;
-                if (response[0]) {
-                    first_element.setAttribute(
+    // const second_element = document.querySelectorAll(
+    //     'div[class="js_form"][data-date="' + date + '"'
+    // )[1];
+    const tasks_container = document.querySelector(
+        'div[class="tasks_container"][data-date="' + date + '"]'
+    );
+    // let second_parent_element;
+    // form_elements.forEach((form) => {
+    //     console.log("all", form);
+    //     if (form !== parent_element) {
+    //         second_parent_element = form;
+    //     }
+    // });
+    // console.log("2つ目div", second_parent_element);
+    xhr.open("GET", "/replaced-task-display/" + date, true);
+    xhr.responseType = "json";
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // 以下、全体的に、新表示箇所の日付欄に対しての操作
+            //レスポンスjsonデータ(該当日のタスクをdbから取得)
+            const response = xhr.response;
+            if (response.length > 0) {
+                const first_element = tasks_container.firstElementChild;
+                first_element.setAttribute(
+                    "data-time",
+                    response[0]["start_time"]
+                );
+                first_element.innerHTML =
+                    "<p class='task badge bg-primary w-100 mb-0 text-start text-truncate align-middle'>" +
+                    response[0]["name"] +
+                    "</p>";
+                // 登録タスクが2つ以上あれば
+                if (response.length > 1) {
+                    const second_element = tasks_container.lastElementChild;
+                    second_element.setAttribute(
                         "data-time",
-                        response[0]["start_time"]
+                        response[1]["start_time"]
                     );
-                    if (first_element.hasAttribute("data-new-form")) {
-                        first_element.removeAttribute("data-new-form");
-                    }
-                    first_element.innerHTML =
-                        "<p>" + response[0]["name"] + "</p>";
-                    if (response.length > 1) {
-                        second_element.setAttribute(
-                            "data-time",
-                            response[1]["start_time"]
+                    second_element.innerHTML =
+                        "<p class='task badge bg-primary w-100 mb-0 text-start text-truncate align-middle'>" +
+                        response[1]["name"] +
+                        "</p>";
+                    // 登録タスクが3つ以上あれば
+                    if (response.length > 2) {
+                        const other_tasks_length = response.length - 2;
+                        const other_tasks_element =
+                            tasks_container.nextElementSibling;
+                        const new_other_tasks_element =
+                            document.createElement("a");
+                        new_other_tasks_element.href =
+                            "/replaced-task-display/" + date;
+                        // new_other_tasks_element.className = "";
+                        new_other_tasks_element.setAttribute(
+                            "class",
+                            "js_task-list fw-bold text-decoration-none text-reset d-block px-1 mt-1"
                         );
-                        if (second_element.hasAttribute("data-new-form")) {
-                            second_element.removeAttribute("data-new-form");
-                        }
-                        second_element.innerHTML =
-                            "<p>" + response[1]["name"] + "</p>";
-                        if (response.length > 2) {
-                            const other_tasks_length = response.length - 2;
-                            const other_tasks_element =
-                                second_element.nextElementSibling;
-                            const new_other_tasks_element =
-                                document.createElement("a");
-                            new_other_tasks_element.href =
-                                "/replaced-task-display/" + date;
-                            new_other_tasks_element.className = "js_task-list";
-                            new_other_tasks_element.dataset.date = date;
-                            new_other_tasks_element.textContent =
-                                "他" + other_tasks_length + "件";
-                            if (other_tasks_element) {
-                                other_tasks_element.replaceWith(
-                                    new_other_tasks_element
-                                );
-                                eventRegistrationInMonthlyAndYear();
-                            } else {
-                                second_element.after(new_other_tasks_element);
-                                eventRegistrationInMonthlyAndYear();
-                            }
+                        new_other_tasks_element.dataset.date = date;
+                        new_other_tasks_element.textContent =
+                            "他" + other_tasks_length + "件";
+                        if (other_tasks_element) {
+                            other_tasks_element.replaceWith(
+                                new_other_tasks_element
+                            );
+                            eventRegistrationInMonthlyAndYear();
                         } else {
-                            if (second_element.nextElementSibling) {
-                                second_element.nextElementSibling.parentNode.removeChild(
-                                    second_element.nextElementSibling
-                                );
-                            }
+                            tasks_container.after(new_other_tasks_element);
+                            eventRegistrationInMonthlyAndYear();
                         }
                     } else {
-                        second_element.setAttribute("data-time", "00:00");
-                        if (!second_element.hasAttribute("data-new-form")) {
-                            second_element.setAttribute("data-new-form", "");
-                        }
-                        if (second_element.firstChild) {
-                            second_element.removeChild(
-                                second_element.firstChild
+                        if (tasks_container.nextElementSibling) {
+                            tasks_container.nextElementSibling.parentNode.removeChild(
+                                tasks_container.nextElementSibling
                             );
                         }
                     }
                 } else {
-                    first_element.setAttribute("data-time", "00:00");
-                    if (!first_element.hasAttribute("data-new-form")) {
-                        first_element.setAttribute("data-new-form", "");
-                    }
-                    if (first_element.hasChildNodes()) {
-                        first_element.removeChild(first_element.firstChild);
+                    const remove_element_parent = tasks_container.lastChild;
+
+                    if (remove_element_parent.firstChild) {
+                        remove_element_parent.removeChild(
+                            remove_element_parent.firstChild
+                        );
+                        remove_element_parent.setAttribute(
+                            "data-time",
+                            "00:00"
+                        );
                     }
                 }
+            } else {
+                // 登録タスクが0だったら
+                const remove_element_parent = tasks_container.firstChild;
+
+                remove_element_parent.removeChild(
+                    remove_element_parent.firstChild
+                );
+                remove_element_parent.setAttribute("data-time", "00:00");
             }
-        };
-        xhr.send(null);
-    }
+        }
+    };
+    xhr.send(null);
 }
 
 function displayErrorMessagesInForm(error_messages) {
@@ -402,7 +411,7 @@ function submitForm() {
             if (!response.ok) {
                 console.log("error!");
             }
-            console.log("ok!");
+
             return response.json();
         })
         .then((data) => {
@@ -411,7 +420,7 @@ function submitForm() {
             );
             const time_duplicated_notification_message =
                 data.time_duplicated_notification_message;
-
+            // 時間重複エラーメッセージをフォームに表示
             if (time_duplicated_notification_message) {
                 one_day_start_time.innerHTML =
                     time_duplicated_notification_message;
@@ -419,6 +428,7 @@ function submitForm() {
                     one_day_start_time.classList.remove("display-none");
                 }
             } else {
+                // 時間重複エラーメッセージをフォームから消す
                 if (one_day_start_time.hasChildNodes()) {
                     one_day_start_time.innerHTML = "";
                 }
@@ -433,7 +443,9 @@ function submitForm() {
         });
 }
 
-function deleteTask(deleteUrl, target, target_global) {
+function deleteTask(deleteUrl, target, target_global, date) {
+    console.log(date);
+
     var xhr = new XMLHttpRequest();
     xhr.open("GET", deleteUrl, true);
     xhr.onreadystatechange = function () {
@@ -450,7 +462,7 @@ function deleteTask(deleteUrl, target, target_global) {
                     }
                 }
             } else if (current_path.indexOf("month") !== -1) {
-                replacedTaskDisplayInMonthlyCalendar(target);
+                replacedTaskDisplayInMonthlyCalendar(date);
             } else {
                 target.removeChild(target.firstChild);
             }
@@ -537,9 +549,10 @@ function getForm(replace, date, time, target, target_global) {
                             }
                         });
                     }
-
+                    //フォームを閉じる
                     modal.addEventListener("click", function (e) {
                         if (e.target.hasAttribute("data-close-confirm")) {
+                            // フォーム入力値の変更があれば、確認ダイアログを表示
                             if (modal.classList.contains("value-change")) {
                                 MicroModal.show("modal-2", {});
                                 form_destruction.addEventListener(
@@ -558,8 +571,10 @@ function getForm(replace, date, time, target, target_global) {
                     const formSubmit =
                         document.getElementById("js_form-submit");
 
+                    //フォーム送信処理
                     formSubmit.addEventListener("click", function (e) {
                         e.preventDefault();
+                        // 入力漏れなどのエラーをチェックし、エラーなければフォーム送信
                         const form_data = new FormData(document.forms.task);
                         const error_messages =
                             returnErrorMessagesIfFormHasInputErrors(form_data);
@@ -567,10 +582,13 @@ function getForm(replace, date, time, target, target_global) {
                             displayErrorMessagesInForm(error_messages);
                             return;
                         } else {
+                            // フォーム送信し、日時重複チェックでエラーがあればフォーム内にエラーメッセージを表示
                             submitForm();
                         }
+                        // 日付データを取得(例:2023-02-04)
                         const input_date =
                             modal.querySelector("input[name='date']").value;
+                        // 時間を取得(例:00:00)
                         const input_time = modal.querySelector(
                             "input[name='one_day_start_time']"
                         ).value;
@@ -581,24 +599,27 @@ function getForm(replace, date, time, target, target_global) {
                                 input_time +
                                 '"]'
                         );
-
+                        // 月カレンダー
                         if (current_path.indexOf("month") !== -1) {
-                            // 以下の書き方の場合、必ず、１つ目のdiv要素になる
+                            // 以下の書き方の場合(querySelector→対象要素が複数あった場合)、必ず、１つ目のdiv要素になる
                             const input_month_element = document.querySelector(
                                 'div[class="js_form"][data-date="' +
                                     input_date +
-                                    '"'
+                                    '"][data-new-form]'
                             );
                             // 画面内に書き換え対象の欄がある場合
                             if (input_month_element) {
                                 replacedTaskDisplayInMonthlyCalendar(
-                                    input_month_element
+                                    input_date
                                 );
+                                // 同月内かつクリックしたフォームの日付と登録日が別であれば
                                 if (
                                     input_date !==
                                     target.getAttribute("data-date")
                                 ) {
+                                    // 開始時間を初期値の"00:00"にする
                                     target.setAttribute("data-time", "00:00");
+                                    // 更新で登録日付が変われば
                                     if (target.hasChildNodes()) {
                                         target.removeChild(target.firstChild);
                                     }
@@ -621,7 +642,7 @@ function getForm(replace, date, time, target, target_global) {
 
                             return;
                         }
-
+                        // 年カレンダー
                         if (current_path.indexOf("year") !== -1) {
                             if (
                                 target.getAttribute("data-date") === input_date
@@ -706,7 +727,7 @@ function getForm(replace, date, time, target, target_global) {
 
                             return;
                         }
-
+                        // 以下、日・週カレンダー対象
                         if (target === input_element) {
                             target.innerHTML =
                                 "<p>" +
@@ -730,14 +751,15 @@ function getForm(replace, date, time, target, target_global) {
                             }
                         }
                     });
-
+                    // 編集フォーム
                     if (modal.querySelector("input[name='task_id']")) {
                         task_destroy.addEventListener("click", function (e) {
                             e.preventDefault();
                             const deleteUrl = e.target.getAttribute("href");
-                            deleteTask(deleteUrl, target, target_global);
+                            console.log(deleteUrl, target, target_global);
+                            deleteTask(deleteUrl, target, target_global, date);
                         });
-
+                        // 完了・未完了チェックの切り替え
                         task_toggle_completion_checks.addEventListener(
                             "click",
                             function (e) {
@@ -841,6 +863,7 @@ const target = document.getElementsByClassName("js_form");
 
 for (let i = 0; i < target.length; i++) {
     target[i].addEventListener("click", function (e) {
+        e.stopPropagation();
         const date = this.getAttribute("data-date");
         const time = this.getAttribute("data-time");
         getForm("js_form-display", date, time, e.currentTarget);
@@ -851,6 +874,7 @@ function eventRegistrationInMonthlyAndYear() {
     const task_list = document.getElementsByClassName("js_task-list");
     for (let i = 0; i < task_list.length; i++) {
         task_list[i].addEventListener("click", function (e) {
+            e.stopPropagation();
             e.preventDefault();
             const date = this.getAttribute("data-date");
             const task_list_url = e.target.getAttribute("href");
@@ -868,7 +892,116 @@ if (
     eventRegistrationInMonthlyAndYear();
 }
 
-js_sidebar_toggle.addEventListener("click", function () {
-    const sidebar = document.getElementById("js_sidebar");
-    sidebar.classList.toggle("display-none");
+// js_sidebar_toggle.addEventListener("click", function () {
+//     const sidebar = document.getElementById("js_sidebar");
+//     sidebar.classList.toggle("display-none");
+// });
+
+const type = document.getElementById("js_calendar_type").value;
+const previous = document.getElementById("js_header_calendar_previous");
+
+previous.addEventListener("click", function (e) {
+    e.preventDefault();
+    const previous_url = document
+        .getElementById("js_header_calendar_previous")
+        .getAttribute("href");
+    const year = document.getElementById("js_header_calendar_year").value;
+    const month = document.getElementById("js_header_calendar_month").value;
+    const url = new URL(previous_url);
+    url.searchParams.set("year", year);
+    url.searchParams.append("month", month);
+    url.searchParams.append("type", type);
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", decodeURIComponent(String(url)), true);
+    xhr.responseType = "json";
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const response = xhr.response;
+            const responseString = response.shift();
+            const parent =
+                document.getElementById("js_header_calendar").parentNode;
+            parent.innerHTML = responseString;
+            const new_previous = document.getElementById(
+                "js_header_calendar_previous"
+            );
+            new_previous.replaceWith(previous);
+            const new_next = document.getElementById("js_header_calendar_next");
+            new_next.replaceWith(next);
+
+            return responseString;
+        }
+    };
+    xhr.send(null);
+});
+
+const next = document.getElementById("js_header_calendar_next");
+
+next.addEventListener("click", function (e) {
+    e.preventDefault();
+    const next_url = document
+        .getElementById("js_header_calendar_next")
+        .getAttribute("href");
+    const year = document.getElementById("js_header_calendar_year").value;
+    const month = document.getElementById("js_header_calendar_month").value;
+    const url = new URL(next_url);
+    url.searchParams.set("year", year);
+    url.searchParams.append("month", month);
+    url.searchParams.append("type", type);
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", decodeURIComponent(String(url)), true);
+    xhr.responseType = "json";
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const response = xhr.response;
+            const responseString = response.shift();
+            const parent =
+                document.getElementById("js_header_calendar").parentNode;
+            parent.innerHTML = responseString;
+            const new_previous = document.getElementById(
+                "js_header_calendar_previous"
+            );
+            new_previous.replaceWith(previous);
+            const new_next = document.getElementById("js_header_calendar_next");
+            new_next.replaceWith(next);
+
+            return responseString;
+        }
+    };
+    xhr.send(null);
+});
+
+const header_dropdown = document.getElementById("header_dropdown");
+header_dropdown.addEventListener("hidden.bs.dropdown", function () {
+    const header_calendar_date = document.getElementById(
+        "js_header_calendar_date"
+    ).value;
+    const calendar_type = document.getElementById("js_calendar_type").value;
+    const initialize_url = document.getElementById(
+        "js_header_calendar_initialize"
+    ).value;
+
+    const url = new URL(initialize_url);
+    url.searchParams.append("date", header_calendar_date);
+    url.searchParams.append("type", calendar_type);
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", decodeURIComponent(String(url)), true);
+    xhr.responseType = "json";
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const response = xhr.response;
+            const responseString = response.shift();
+            const parent =
+                document.getElementById("js_header_calendar").parentNode;
+            parent.innerHTML = responseString;
+            const new_previous = document.getElementById(
+                "js_header_calendar_previous"
+            );
+            new_previous.replaceWith(previous);
+            const new_next = document.getElementById("js_header_calendar_next");
+            new_next.replaceWith(next);
+
+            return responseString;
+        }
+    };
+    xhr.send(null);
 });

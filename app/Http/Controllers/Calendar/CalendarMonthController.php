@@ -14,25 +14,26 @@ class CalendarMonthController extends Controller
         // $carbon = new CarbonImmutable($date);
         $carbon = CarbonImmutable::createSafe($year, $month, $day);
 
-        $start_day = $carbon->startOfMonth();
-        $last_day = $carbon->endOfMonth();
+        $start_day = $carbon->startOfMonth()->startOfWeek();
+        $last_day = $carbon->endOfMonth()->endOfWeek();
+        // dd($carbon, $start_day, $last_day);
         $days = [];
-
         while ($start_day->lte($last_day)) {
             $days[] = $start_day;
             $start_day = $start_day->addDay(1);
         }
+        // dd($days);
 
         $calendar = new CalendarView($carbon, $days);
         $form_path = url(route('form'));
         $previous = $carbon->subMonthNoOverflow()->format('Y/n/j');
         $next = $carbon->addMonthNoOverflow()->format('Y/n/j');
         $header_date = $carbon->format('Y年n月');
-
+        $header_calendar_date = $carbon->format('Y年n月');
         $request_path_split = explode("/", $request->path());
         $calendar_type = array_shift($request_path_split);
         $request_date_path = implode('/', $request_path_split);
 
-        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date', 'request_date_path'));
+        return view('calendar.day', compact('calendar', 'form_path', 'calendar_type', 'previous', 'next', 'header_date', 'request_date_path', 'header_calendar_date'));
     }
 }

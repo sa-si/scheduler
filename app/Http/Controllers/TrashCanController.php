@@ -12,9 +12,9 @@ class TrashCanController extends Controller
 {
     public function index() {
         $p_tasks = PlanningTask::select(['id', 'name', 'created_at', 'deleted_at', DB::raw('"plans" as type')])->onlyTrashed()->where('user_id', Auth::id())->orderBy('deleted_at', 'DESC');
-        $tasks = ExecutionTask::select(['id', 'name', 'created_at', 'deleted_at', DB::raw('"results" as type')])->onlyTrashed()->where('user_id', Auth::id())->orderBy('deleted_at', 'DESC')->union($p_tasks)->get();
+        $discarded_tasks = ExecutionTask::select(['id', 'name', 'created_at', 'deleted_at', DB::raw('"results" as type')])->onlyTrashed()->where('user_id', Auth::id())->orderBy('deleted_at', 'DESC')->union($p_tasks)->get();
 
-        return view('trash-can', compact('tasks'));
+        return view('trash-can', compact('discarded_tasks'));
     }
 
     public function update(Request $request)

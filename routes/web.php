@@ -11,6 +11,7 @@ use App\Http\Controllers\Calendar\CalendarMonthController;
 use App\Http\Controllers\Calendar\CalendarYearController;
 use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\TrashCanController;
+use App\Http\Controllers\Calendar\HeaderCalendarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,9 @@ Auth::routes();
 
 Route::middleware('auth')->group(function () {
     Route::get('/async-form', [CalendarDayController::class, 'form'])->name('form');
+    Route::get('/async-header-calendar-previous', [HeaderCalendarController::class, 'showPreviousMonth'])->name('header-calendar-previous');
+    Route::get('/async-header-calendar-next', [HeaderCalendarController::class, 'showNextMonth'])->name('header-calendar-next');
+    Route::get('/async-header-calendar-initialize', [HeaderCalendarController::class, 'initialize'])->name('header-calendar-initialize');
     Route::get('/replaced-task-display/{day}', [PlanningTaskController::class, 'getDailyTasksInJson'])->name('replaced-task-display');
     Route::get('/day/{year?}/{month?}/{day?}', [CalendarDayController::class, 'index'])->where( ['year' => '\d{4}', 'month' => '[1-9]|1[0-2]', 'day' => '[1-9]|1[0-9]|2[0-9]|3[0-1]'] )->name('day');
     Route::get('/week/{year?}/{month?}/{day?}', [CalendarWeekController::class, 'index'])->where( ['year' => '\d{4}', 'month' => '[1-9]|1[0-2]', 'day' => '[1-9]|1[0-9]|2[0-9]|3[0-1]'] )->name('week');

@@ -74,7 +74,7 @@ class PlanningTaskController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description'  => 'required|string|max:5000',
+            'description'  => 'nullable|string|max:5000',
             'date' => 'required|string|size:10',
             'one_day_start_time' => 'required|date_format:H:i|size:5',
             'one_day_end_time' => 'required|date_format:H:i|after:one_day_start_time|size:5',

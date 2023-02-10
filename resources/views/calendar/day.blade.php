@@ -1,9 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-    <input type="hidden" value="{{ $form_path }}" id="form-path">
+    <input type="hidden" value="{{ url(route('form')) }}" id="form-path">
+    <input type="hidden" id="js_calendar_type" value="{{ $calendar_type }}">
     <div id="js_form-display" class="form"></div>
-    {!! $calendar->render() !!}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="card border-0">
+                <div class="calendar">{!! $calendar->render() !!}</div>
+            </div>
+        </div>
+    </div>
     <div class="modal micromodal-slide" id="modal-3" aria-hidden="true">
         <div class="modal__overlay" tabindex="-1">
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-3-title">

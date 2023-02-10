@@ -8,7 +8,6 @@ class CalendarView {
 
     public $carbon;
     public $days;
-    public $tasks;
 
     const FIRST_HOUR = 0;
     const FINAL_HOUR = 23;
@@ -242,9 +241,9 @@ class CalendarView {
             }
         } else {
             // 月カレンダービュー
-            $html[] = '<table>';
+            $html[] = '<table class="table">';
             $html[] = '<thead>';
-            $html[] = '<tr>';
+            $html[] = '<tr class="">';
             $html[] = '<th>月</th>';
             $html[] = '<th>火</th>';
             $html[] = '<th>水</th>';
@@ -254,58 +253,45 @@ class CalendarView {
             $html[] = '<th>日</th>';
             $html[] = '</tr>';
             $html[] = '</thead>';
-            $html[] = '<tbody>';
-
+        $html[] = '<tbody class="">';
+            // dd($this->days);
             $tasks = PlanningTask::getTasks($this->days);
-            // やっぱり、週単位で管理したほうがいいな！
-            // $start_day = $this->days[0]->startOfWeek();
-            // $last_day = $this->days[0]->endOfWeek();
-            $first_day = $this->days[0]->firstOfMonth();
-            $last_day = $this->days[0]->lastOfMonth()->endOfWeek();
-            // $fifth_weekend = $start_day->addDays(34)->toDateString();
-            // $end_of_month = $this->days[0]->endOfMonth()->toDateString();
+            $first_day = $this->days[0];
+            $last_day = $this->days[count($this->days) - 1];
 
-            // if ($fifth_weekend > $end_of_month || $fifth_weekend === $end_of_month) {
-            //     $num_weeks_to_display = 5;
-            // } elseif ($fifth_weekend < $end_of_month) {
-            //     $num_weeks_to_display = 6;
-            // }
-            // calendarアプリでは、
             while($first_day->lte($last_day)){
-            // for ($i = 0; $i < $num_weeks_to_display; $i++) {
                 // 1週間分の日付レンダリング要素
-                $start_day = $first_day->startOfWeek();
+                $start_day = $first_day;
                 $end_day = $first_day->endOfWeek();
-                $html[] = '<tr>';
+                $html[] = '<tr class="row-height-test">';
                 while ($start_day->lte($end_day)) {
                     $html[] = '<td class="' . $this->getDayClassName($start_day) . '">';
-                    $html[] = '<p class="date" data-date="' . $start_day->format('Y-m-d') . '">' . $this->getDate($start_day) . '</p>';
-                    $key =  $start_day->format('Y-m-d');
-                    if (isset($tasks[$key])) {
-                        $display_tasks = array_slice($tasks[$key], 0, 2);
+                    $date_key =  $start_day->format('Y-m-d');
+                    $html[] = '<div class="js_form" data-date="' . $date_key . '" data-time="00:00" data-new-form>';
+                    $html[] = '<p class="date mb-1 pt-1 text-center" data-date="' . $start_day->format('Y-m-d') . '">' . $this->getDate($start_day) . '</p>';
+                    $html[] = '<div class="tasks_container" data-date="' . $date_key . '">';
+                    if (isset($tasks[$date_key])) {
+                        $display_tasks = array_slice($tasks[$date_key], 0, 2);
+                        foreach ($display_tasks as $task) {
+                            $html[] = '<div class="js_form pe-1" data-date="' . $task['date'] . '" data-time="' . $task['start_time'] .'">';
+                            $html[] = '<p class="task badge bg-primary w-100 mb-0 text-start text-truncate align-middle">' . $task['name'] . '</p>';
+                            $html[] = '</div>';
+                        }
                         if (count($display_tasks) === 1) {
-                            foreach ($display_tasks as $task) {
-                                $html[] = '<div class="js_form" data-date="' . $task['date'] . '" data-time="' . $task['start_time'] .'">';
-                                $html[] = '<p>' . $task['name'] . '</p>';
-                                $html[] = "</div>";
-                            }
-                            $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
-                        } else {
-                            foreach ($display_tasks as $task) {
-                                $html[] = '<div class="js_form" data-date="' . $task['date'] . '" data-time="' . $task['start_time'] .'">';
-                                $html[] = '<p>' . $task['name'] . '</p>';
-                                $html[] = "</div>";
-                            }
-                            $other_tasks = array_slice($tasks[$key], 2);
-                            $other_tasks_length = count($other_tasks);
-                            if ($other_tasks_length !== 0){
-                                $html[] = '<a href="/replaced-task-display/' . $key . '" class="js_task-list" data-date="' . $key . '">他' . $other_tasks_length . '件</a>';
-                            }
+                            $html[] = '<div class="js_form pe-1" data-date="' . $date_key . '" data-time="00:00"></div>';
+                        }
+                        $html[] = "</div>";
+                        $other_tasks = array_slice($tasks[$date_key], 2);
+                        $other_tasks_length = count($other_tasks);
+                        if ($other_tasks_length !== 0){
+                            $html[] = '<a href="/replaced-task-display/' . $date_key . '" class="js_task-list fw-bold text-decoration-none text-reset d-block px-1 mt-1" data-date="' . $date_key . '">他' . $other_tasks_length . '件</a>';
                         }
                     } else {
-                        $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
-                        $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
+                        $html[] = '<div class="js_form pe-1" data-date="' . $date_key . '" data-time="00:00"></div>';
+                        $html[] = '<div class="js_form pe-1" data-date="' . $date_key . '" data-time="00:00"></div>';
+                        $html[] = '</div>';
                     }
+                    $html[] = "</div>";
                     $html[] = '</td>';
                     $start_day = $start_day->addDay();
                 }
@@ -320,8 +306,25 @@ class CalendarView {
         return implode("", $html);
     }
 
-    public function renderHeaderCalendar() {
+    public function getHeaderCalendarYearAndMonth() {
+        return $this->carbon->format('Y-n');
+    }
+
+    public static function renderHeaderCalendar(string $calendar_date, string $calendar_type) {
+        $carbon = new CarbonImmutable($calendar_date);
+        $date = $carbon->format('Y年n月');
+        $year = $carbon->year;
+        $month = $carbon->month;
         $html = [];
+        $html[] = '<input type="hidden" id="js_header_calendar_year" value="' . $year . '">';
+        $html[] = '<input type="hidden" id="js_header_calendar_month" value="' . $month . '">';
+        $html[] = '<div id="js_header_calendar" class="d-flex justify-content-between">';
+        $html[] = '<p>' . $date . '</p>';
+        $html[] = '<div class="d-flex">';
+        $html[] = '<a id="js_header_calendar_previous" href="' . route('header-calendar-previous') . '">&lt;</a>';
+        $html[] = '<a id="js_header_calendar_next" href="' . route('header-calendar-next') . '">&gt;</a>';
+        $html[] = '</div>';
+        $html[] = '</div>';
         // 月カレンダービュー
         $html[] = '<table>';
         $html[] = '<thead>';
@@ -337,8 +340,9 @@ class CalendarView {
         $html[] = '</thead>';
         $html[] = '<tbody>';
 
-        $first_day = $this->days[0]->firstOfMonth();
-        $last_day = $this->days[0]->lastOfMonth()->endOfWeek();
+        $current_month = $carbon->firstOfMonth();
+        $first_day = $carbon->firstOfMonth();
+        $last_day = $carbon->lastOfMonth()->endOfWeek();
 
         while($first_day->lte($last_day)){
             // 1週間分の日付レンダリング要素
@@ -346,34 +350,8 @@ class CalendarView {
             $end_day = $first_day->endOfWeek();
             $html[] = '<tr>';
             while ($start_day->lte($end_day)) {
-                $html[] = '<td class="' . $this->getDayClassName($start_day) . '">';
-                $html[] = '<p class="date" data-date="' . $start_day->format('Y-m-d') . '">' . $this->getDate($start_day) . '</p>';
-                // $key =  $start_day->format('Y-m-d');
-                // if (isset($tasks[$key])) {
-                //     $display_tasks = array_slice($tasks[$key], 0, 2);
-                //     if (count($display_tasks) === 1) {
-                //         foreach ($display_tasks as $task) {
-                //             $html[] = '<div class="js_form" data-date="' . $task['date'] . '" data-time="' . $task['start_time'] .'">';
-                //             $html[] = '<p>' . $task['name'] . '</p>';
-                //             $html[] = "</div>";
-                //         }
-                //         $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
-                //     } else {
-                //         foreach ($display_tasks as $task) {
-                //             $html[] = '<div class="js_form" data-date="' . $task['date'] . '" data-time="' . $task['start_time'] .'">';
-                //             $html[] = '<p>' . $task['name'] . '</p>';
-                //             $html[] = "</div>";
-                //         }
-                //         $other_tasks = array_slice($tasks[$key], 2);
-                //         $other_tasks_length = count($other_tasks);
-                //         if ($other_tasks_length !== 0){
-                //             $html[] = '<a href="/replaced-task-display/' . $key . '" class="js_task-list" data-date="' . $key . '">他' . $other_tasks_length . '件</a>';
-                //         }
-                //     }
-                // } else {
-                //     $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
-                //     $html[] = '<div class="js_form" data-date="' . $key . '" data-time="00:00" data-new-form></div>';
-                // }
+                $html[] = '<td>';
+                $html[] = '<a class="' . self::getHeaderCalendarClassName($start_day, $current_month) . '" href="' . route($calendar_type) . '/' . self::getHeaderCalendarLink($start_day) . '">' . self::getHeaderCalendarDate($start_day) . '</a>';
                 $html[] = '</td>';
                 $start_day = $start_day->addDay();
             }
@@ -387,9 +365,25 @@ class CalendarView {
         return implode("", $html);
     }
 
+    private static function getHeaderCalendarDate(CarbonImmutable $day) {
+        return $day->day;
+    }
+
+    private static function getHeaderCalendarClassName(CarbonImmutable $check_target_month, CarbonImmutable $current_month) {
+        if(!$check_target_month->isSameMonth($current_month)) {
+            return 'date' . ' ' . 'other-month' . ' ' . strtolower($check_target_month->format('D'));
+        }
+
+        return 'date' . ' ' . strtolower($check_target_month->format('D'));
+    }
+
+    private static function getHeaderCalendarLink(CarbonImmutable $day) {
+        return $day->format('Y/n/j');
+    }
+
     private function getDate(CarbonImmutable $day) {
-        if ($day->day === 1 || $day->isLastOfMonth()) {
-            return $day->format('n月j日');
+        if ($day->day === 1) {
+            return $day->format('n/j');
         }
 
         return $day->day;
