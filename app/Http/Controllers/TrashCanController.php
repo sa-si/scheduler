@@ -8,25 +8,36 @@ use App\Models\ExecutionTask;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function PHPUnit\Framework\isNull;
+
 class TrashCanController extends Controller
 {
-    public function index() {
-        $p_tasks = PlanningTask::select(['id', 'name', 'created_at', 'deleted_at', DB::raw('"plans" as type')])->onlyTrashed()->where('user_id', Auth::id())->orderBy('deleted_at', 'DESC');
-        $discarded_tasks = ExecutionTask::select(['id', 'name', 'created_at', 'deleted_at', DB::raw('"results" as type')])->onlyTrashed()->where('user_id', Auth::id())->orderBy('deleted_at', 'DESC')->union($p_tasks)->get();
+    public function index(Request $request) {
+        $url = parse_url(url()->previous(), PHP_URL_PATH);
+        $new_url = substr($url, 1);
 
-        return view('trash-can', compact('discarded_tasks'));
+        if ($request->path() === $new_url || is_null($request->headers->get('referer'))) {
+            $previous_url = route('month');
+        } else {
+            $previous_url = $request->headers->get('referer');
+        }
+
+        $discarded_tasks = PlanningTask::select(['id', 'name', 'created_at', 'deleted_at', DB::raw('"plans" as type')])->onlyTrashed()->where('user_id', Auth::id())->orderBy('deleted_at', 'DESC')->paginate(50);
+
+        return view('trash-can', compact('discarded_tasks', 'previous_url'));
     }
 
     public function update(Request $request)
     {
+        $request->validate([
+            'checked_tasks' => 'required|array',
+            'checked_tasks.*' => 'required|integer',
+        ]);
+
         if (isset($request->restore)) {
             DB::transaction(function () use($request) {
-                if (isset($request->plans)) {
-                     PlanningTask::whereIn('id', $request->plans)->restore();
-                }
-
-                if (isset($request->results)) {
-                    ExecutionTask::whereIn('id', $request->results)->restore();
+                if (isset($request->checked_tasks)) {
+                     PlanningTask::whereIn('id', $request->checked_tasks)->restore();
                 }
             });
 
@@ -36,12 +47,8 @@ class TrashCanController extends Controller
             'status' => 'alert']);
         } elseif (isset($request->destroy)) {
             DB::transaction(function () use($request) {
-                if (isset($request->plans)) {
-                    PlanningTask::whereIn('id', $request->plans)->forceDelete();
-                }
-
-                if (isset($request->results)) {
-                    ExecutionTask::whereIn('id', $request->results)->forceDelete();
+                if (isset($request->checked_tasks)) {
+                    PlanningTask::whereIn('id', $request->checked_tasks)->forceDelete();
                 }
             });
 

@@ -26,7 +26,7 @@ class PlanningTaskController extends Controller
             'date' => 'required|string|size:10',
             'one_day_start_time' => 'required|date_format:H:i|size:5',
             'one_day_end_time' => 'required|date_format:H:i|after:one_day_start_time|size:5',
-            'project' => 'nullable|integer',
+            'project' => 'nullable|max:50',
             'tags.*.*' => 'nullable|integer',
         ]);
 
@@ -78,7 +78,7 @@ class PlanningTaskController extends Controller
             'date' => 'required|string|size:10',
             'one_day_start_time' => 'required|date_format:H:i|size:5',
             'one_day_end_time' => 'required|date_format:H:i|after:one_day_start_time|size:5',
-            'project' => 'nullable|integer',
+            'project' => 'nullable|max:50',
             'tags.*.*' => 'nullable|integer',
         ]);
 

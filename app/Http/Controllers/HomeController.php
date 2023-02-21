@@ -22,10 +22,19 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    public function edit() {
+    public function edit(Request $request) {
+        $url = parse_url(url()->previous(), PHP_URL_PATH);
+        $new_url = substr($url, 1);
+
+        if ($request->path() === $new_url || is_null($request->headers->get('referer'))) {
+            $previous_url = route('month');
+        } else {
+            $previous_url = $request->headers->get('referer');
+        }
+
         $user_profile = User::find(Auth::id());
 
-        return view('profile', compact('user_profile'));
+        return view('profile', compact('user_profile', 'previous_url'));
     }
 
     public function update(Request $request) {

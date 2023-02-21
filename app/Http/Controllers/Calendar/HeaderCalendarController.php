@@ -14,7 +14,7 @@ class HeaderCalendarController extends Controller
         $month = (int) $request->month;
         $carbon =  CarbonImmutable::createSafe($year, $month);
         $previous = $carbon->subMonthNoOverflow()->format('Y-n');
-        $calendar_view = CalendarView::renderHeaderCalendar($previous, $request->type);
+        $calendar_view = CalendarView::renderHeaderCalendar($previous, $request->type, $request->width);
 
         return [$calendar_view];
     }
@@ -24,13 +24,13 @@ class HeaderCalendarController extends Controller
         $month = (int) $request->month;
         $carbon =  CarbonImmutable::createSafe($year, $month);
         $next = $carbon->addMonthNoOverflow()->format('Y-n');
-        $calendar_view = CalendarView::renderHeaderCalendar($next, $request->type);
+        $calendar_view = CalendarView::renderHeaderCalendar($next, $request->type, $request->width);
 
         return [$calendar_view];
     }
 
     public function initialize(Request $request) {
-        $calendar_view = CalendarView::renderHeaderCalendar($request->date, $request->type);
+        $calendar_view = CalendarView::renderHeaderCalendar($request->date, $request->type, $request->width);
 
         return [$calendar_view];
     }

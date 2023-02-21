@@ -52,21 +52,23 @@ class CalendarDayController extends Controller
             return view('components.form-task-edit', compact('task', 'registered_project', 'projects', 'tags', 'associated_tags'));
         }
 
-        $registered_project = $task->project ?? '';
-        $registered_project_id = $registered_project->id ?? null;
-        $projects = Project::where('user_id', Auth::id())->where('id', '<>', $registered_project_id)->get();
+        // $registered_project = $task->project ?? '';
+        // $registered_project_id = $registered_project->id ?? null;
+        // $projects = Project::where('user_id', Auth::id())->where('id', '<>', $registered_project_id)->get();
+        $projects = Project::where('user_id', Auth::id())->get();
         $tags = Tag::where('user_id', Auth::id())->get();
         $associated_tags = [];
-        // dd($request->date, $request->time);
         $date = $request->date;
         if ($request->form) {
-            $start_time = '00:00';
-            $end_time = '00:15';
-        } else {
+        $start_time = '00:00';
+        $end_time = '00:15';
+        }
+        else {
             $start_time = $request->time;
             $end_time = date('H:i', strtotime("${start_time} +15 min"));
         }
 
-        return view('components.form-task-create', compact('date', 'start_time', 'end_time', 'registered_project', 'projects', 'tags', 'associated_tags'));
+        // return view('components.form-task-create', compact('date', 'start_time', 'end_time', 'registered_project', 'projects', 'tags', 'associated_tags'));
+        return view('components.form-task-create', compact('date', 'start_time', 'end_time', 'projects', 'tags', 'associated_tags'));
     }
 }

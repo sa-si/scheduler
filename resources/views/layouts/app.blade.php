@@ -35,15 +35,15 @@
                         <input type="hidden" id="js_header_calendar_initialize"
                             value="{{ route('header-calendar-initialize') }}">
                         <a class="navbar-brand me-5" href="{{ route('month') }}">{{ config('app.name', 'Laravel') }}</a>
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown me-3" id="header_dropdown">
+                        <ul class="navbar-nav d-none d-lg-block">
+                            <li class="nav-item dropdown me-3" id="header_dropdown_lg">
                                 <a class="nav-link active dropdown-toggle" aria-current="page" href="#"
                                     id="dropdownMenuClickableInside" role="button" data-bs-toggle="dropdown"
                                     data-bs-auto-close="outside" aria-expanded="false">
                                     {{ $header_date }}
                                 </a>
-                                <div class="dropdown-menu position-absolute" aria-labelledby="dropdownMenuClickableInside">
-                                    {!! $calendar->renderHeaderCalendar($calendar->getHeaderCalendarYearAndMonth(), $calendar_type) !!}
+                                <div class="dropdown-menu zindex-modal-backdrop" aria-labelledby="dropdownMenuClickableInside">
+                                    {!! $calendar->renderHeaderCalendar($calendar->getHeaderCalendarYearAndMonth(), $calendar_type, 'lg') !!}
                                 </div>
                             </li>
                         </ul>
@@ -64,15 +64,27 @@
                                     <a class="nav-link px-2 fs-4 py-0" href="{{ route($calendar_type) . '/' . $next }}">&gt</a>
                                 </li>
                             </ul>
+                            <ul class="navbar-nav d-lg-none">
+                                <li class="nav-item dropdown" id="header_dropdown_md">
+                                    <a class="nav-link active dropdown-toggle" aria-current="page" href="#"
+                                        id="dropdownMenuClickableInside" role="button" data-bs-toggle="dropdown"
+                                        data-bs-auto-close="outside" aria-expanded="false">
+                                        {{ $header_date }}
+                                    </a>
+                                    <div class="dropdown-menu mb-3" aria-labelledby="dropdownMenuClickableInside">
+                                        {!! $calendar->renderHeaderCalendar($calendar->getHeaderCalendarYearAndMonth(), $calendar_type, 'md') !!}
+                                    </div>
+                                </li>
+                            </ul>
                             <ul class="flex ps-0 me-3 list-unstyled navbar-nav flex-fill d-lg-none">
                                 <li class="nav-item d-flex align-items-center me-3">
-                                    <a class="nav-link py-1" href="#">今日</a>
+                                    <a class="nav-link py-1" href="{{ route($calendar_type) }}">今日</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link fs-4 py-0" href="#">&lt</a>
+                                    <a class="nav-link fs-4 py-0" href="{{ route($calendar_type) . '/' . $previous }}">&lt</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link fs-4 py-0" href="#">&gt</a>
+                                    <a class="nav-link fs-4 py-0" href="{{ route($calendar_type) . '/' . $next }}">&gt</a>
                                 </li>
                             </ul>
                             <ul class="navbar-nav me-3 mb-md-0">
@@ -115,15 +127,25 @@
                     @endisset
                     @isset($discarded_tasks)
                         <div class="d-flex">
-                            <button class="btn btn-dark border-0 me-3" type="button"
-                                onClick="history.back();">&#8656;</button>
+                            <a href="{{ $previous_url }}" class="text-white d-flex align-items-center me-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
+                                    class="bi bi-arrow-left" viewBox="0 0 17 17">
+                                    <path fill-rule="evenodd"
+                                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                                </svg>
+                            </a>
                             <span class="navbar-text text-white fs-6">ゴミ箱</span>
                         </div>
                     @endisset
                     @isset($user_profile)
                         <div class="d-flex">
-                            <button class="btn btn-dark border-0 me-3" type="button"
-                                onClick="history.back();">&#8656;</button>
+                            <a href="{{ $previous_url }}" class="text-white d-flex align-items-center me-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
+                                    class="bi bi-arrow-left" viewBox="0 0 17 17">
+                                    <path fill-rule="evenodd"
+                                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                                </svg>
+                            </a>
                             <span class="navbar-text text-white fs-6">プロフィール編集</span>
                         </div>
                     @endisset
@@ -131,15 +153,10 @@
             </nav>
         @endauth
 
-        <main class="py-3">
+        <main class="pb-3">
             @yield('content')
         </main>
     </div>
-    @isset($calendar)
-        <script>
-            const calendar = @json($calendar);
-        </script>
-    @endisset
 </body>
 
 </html>

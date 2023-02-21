@@ -1,4 +1,4 @@
-import { indexOf, keysIn } from "lodash";
+import { indexOf } from "lodash";
 import MicroModal from "micromodal";
 const current_path = location.pathname;
 
@@ -265,17 +265,6 @@ function replacedTaskDisplayInMonthlyCalendar(date) {
 }
 
 function displayErrorMessagesInForm(error_messages) {
-    if (current_path.indexOf("trash-can") !== -1) {
-        const trash = document.getElementById("error-form-trash-can-field");
-        if (error_messages["trash-can"]) {
-            trash.innerHTML = error_messages["trash-can"];
-            if (trash.classList.contains("display-none")) {
-                trash.classList.remove("display-none");
-            }
-        }
-        return;
-    }
-
     const name = document.getElementById("error-form-task-field-name");
     const description = document.getElementById(
         "error-form-task-field-description"
@@ -366,19 +355,9 @@ function returnErrorMessagesIfFormHasInputErrors(form_data) {
     const field_date = form_data.get("date");
     const field_one_day_start_time = form_data.get("one_day_start_time");
     const field_one_day_end_time = form_data.get("one_day_end_time");
-    const field_trash_can_tasks = form_data.getAll("checked_tasks[]");
-
     // "00:00"形式になっているかチェックするための正規表現
     const date_format = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
     const time_format = /^([01][0-9]|2[0-3]):(00|15|30|45)$/;
-
-    if (current_path.indexOf("trash-can") !== -1) {
-        if (field_trash_can_tasks.length === 0) {
-            error_messages["trash-can"] =
-                "削除または復元するタスクを選択してください";
-            return error_messages;
-        }
-    }
 
     if (field_name === "") {
         error_messages["name"] = "タスク名を入力してください";
@@ -459,22 +438,19 @@ function submitForm() {
                 }
                 MicroModal.close("modal-1");
                 const path = document.getElementById("js_current_url").value;
-                const url = new URL(path);
-                const xhr2 = new XMLHttpRequest();
-                xhr2.open("GET", decodeURIComponent(String(url)), true);
-                xhr2.onreadystatechange = function () {
-                    if (xhr2.readyState == 4 && xhr2.status == 200) {
-                        const data = xhr2.responseText;
+                let url = new URL(path);
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", decodeURIComponent(String(url)), true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        const data = xhr.responseText;
+                        console.log(data);
+
                         const elem = document.body;
                         elem.innerHTML = data;
-                        console.log("ただいまDOM差し替え後！");
-                        const head = document.getElementsByTagName("head")[0];
-                        const script = document.createElement("script");
-                        script.src = src;
-                        head.appendChild(script);
                     }
                 };
-                xhr2.send(null);
+                xhr.send(null);
             }
         })
         .catch((error) => {
@@ -483,29 +459,39 @@ function submitForm() {
 }
 
 function deleteTask(deleteUrl, target, target_global, date) {
+    console.log(date);
+
     var xhr = new XMLHttpRequest();
     xhr.open("GET", deleteUrl, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             MicroModal.close("modal-1", {});
+            let d = new Date().getTime();
+            [...document.querySelectorAll("script")].forEach((elm) => {
+                elm.src = elm.src.replace(/(\.js)\??[0-9]{0,}$/, ".js?" + d);
+            });
+            // const path = document.getElementById("js_current_url").value;
+            // let url = new URL(path);
+            // var xhr2 = new XMLHttpRequest();
+            // xhr2.open("GET", decodeURIComponent(String(url)), true);
+            // xhr2.onreadystatechange = function () {
+            //     if (xhr2.readyState == 4 && xhr2.status == 200) {
+            //         const data = xhr2.responseText;
+            //         // console.log(data);
 
-            const path = document.getElementById("js_current_url").value;
-            const url = new URL(path);
-            const xhr2 = new XMLHttpRequest();
-            xhr2.open("GET", decodeURIComponent(String(url)), true);
-            xhr2.onreadystatechange = function () {
-                if (xhr2.readyState == 4 && xhr2.status == 200) {
-                    const data = xhr2.responseText;
-                    const elem = document.body;
-                    elem.innerHTML = data;
-                    console.log("ただいまDOM差し替え後！");
-                    const head = document.getElementsByTagName("head")[0];
-                    const script = document.createElement("script");
-                    script.src = src;
-                    head.appendChild(script);
-                }
-            };
-            xhr2.send(null);
+            //         const elem = document.body;
+            //         elem.innerHTML = data;
+            //         let d = new Date().getTime();
+
+            //         [...document.querySelectorAll("script")].forEach((elm) => {
+            //             elm.src = elm.src.replace(
+            //                 /(\.js)\??[0-9]{0,}$/,
+            //                 ".js?" + d
+            //             );
+            //         });
+            //     }
+            // };
+            // xhr2.send(null);
             // if (current_path.indexOf("year") !== -1) {
             //     const target_parent = target.parentNode;
             //     target.parentNode.removeChild(target);
@@ -627,6 +613,31 @@ function getForm(replace, date, time, target, target_global) {
                                     function () {
                                         MicroModal.close("modal-2");
                                         MicroModal.close("modal-1");
+
+                                        const path =
+                                            document.getElementById(
+                                                "js_current_url"
+                                            ).value;
+                                        let url = new URL(path);
+                                        var xhr = new XMLHttpRequest();
+                                        xhr.open(
+                                            "GET",
+                                            decodeURIComponent(String(url)),
+                                            true
+                                        );
+                                        xhr.onreadystatechange = function () {
+                                            if (
+                                                xhr.readyState == 4 &&
+                                                xhr.status == 200
+                                            ) {
+                                                const data = xhr.responseText;
+                                                console.log(data);
+
+                                                const elem = document.body;
+                                                elem.innerHTML = data;
+                                            }
+                                        };
+                                        xhr.send(null);
                                     }
                                 );
                             } else {
@@ -828,6 +839,7 @@ function getForm(replace, date, time, target, target_global) {
                         task_destroy.addEventListener("click", function (e) {
                             e.preventDefault();
                             const deleteUrl = e.target.getAttribute("href");
+                            console.log(deleteUrl, target, target_global);
                             deleteTask(deleteUrl, target, target_global, date);
                         });
                         // 完了・未完了チェックの切り替え
@@ -977,6 +989,54 @@ if (
     eventRegistrationInMonthlyAndYear();
 }
 
+// js_sidebar_toggle.addEventListener("click", function () {
+//     const sidebar = document.getElementById("js_sidebar");
+//     sidebar.classList.toggle("display-none");
+// });
+
+function moveBackAndForthInHeaderCalendar(received_url, width) {
+    const year = document.getElementById(
+        "js_header_calendar_year_" + width
+    ).value;
+    const month = document.getElementById(
+        "js_header_calendar_month_" + width
+    ).value;
+    const url = new URL(received_url);
+    url.searchParams.set("year", year);
+    url.searchParams.append("month", month);
+    url.searchParams.append("type", type);
+    url.searchParams.append("width", width);
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", decodeURIComponent(String(url)), true);
+    xhr.responseType = "json";
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const response = xhr.response;
+            const responseString = response.shift();
+            const parent = document.getElementById(
+                "js_header_calendar_" + width
+            ).parentNode;
+            parent.innerHTML = responseString;
+            const new_previous = document.getElementById(
+                "js_header_calendar_previous_" + width
+            );
+            const new_next = document.getElementById(
+                "js_header_calendar_next_" + width
+            );
+            if (width === "lg") {
+                new_previous.replaceWith(previous_lg);
+                new_next.replaceWith(next_lg);
+            } else if (width === "md") {
+                new_previous.replaceWith(previous_md);
+                new_next.replaceWith(next_md);
+            }
+
+            return responseString;
+        }
+    };
+    xhr.send(null);
+}
+
 function initializeHeaderCalendarDates(width, previous, next) {
     const header_calendar_date = document.getElementById(
         "js_header_calendar_date"
@@ -1019,140 +1079,57 @@ function initializeHeaderCalendarDates(width, previous, next) {
     xhr.send(null);
 }
 
-if (
-    current_path.indexOf("trash-can") !== -1 ||
-    current_path.indexOf("profile") !== -1
-) {
-    // const trashCanRestoreFormSubmit = document.getElementById(
-    //     "js_trash-can-form-restore-submit"
-    // );
-    // const trashCanDestroyFormSubmit = document.getElementById(
-    //     "js_trash-can-form-destroy-submit"
-    // );
-    const trashCanForm = document.getElementById("js_trash_can_form");
+const type = document.getElementById("js_calendar_type").value;
+const width_lg = document.getElementById("js_header_calendar_width_lg").value;
+const width_md = document.getElementById("js_header_calendar_width_md").value;
+const previous_lg = document.getElementById("js_header_calendar_previous_lg");
+const previous_md = document.getElementById("js_header_calendar_previous_md");
+const next_lg = document.getElementById("js_header_calendar_next_lg");
+const next_md = document.getElementById("js_header_calendar_next_md");
 
-    //フォーム送信処理
-    trashCanForm.addEventListener("submit", function (e) {
-        // 入力漏れなどのエラーをチェックし、エラーなければフォーム送信
-        const trash_can_form_data = new FormData(document.forms.trashCan);
-        const error_messages =
-            returnErrorMessagesIfFormHasInputErrors(trash_can_form_data);
-        if (Object.keys(error_messages).length > 0) {
-            displayErrorMessagesInForm(error_messages);
-            e.preventDefault();
-        }
-    });
-} else {
-    function moveBackAndForthInHeaderCalendar(received_url, width) {
-        const year = document.getElementById(
-            "js_header_calendar_year_" + width
-        ).value;
-        const month = document.getElementById(
-            "js_header_calendar_month_" + width
-        ).value;
-        const url = new URL(received_url);
-        url.searchParams.set("year", year);
-        url.searchParams.append("month", month);
-        url.searchParams.append("type", type);
-        url.searchParams.append("width", width);
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", decodeURIComponent(String(url)), true);
-        xhr.responseType = "json";
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                const response = xhr.response;
-                const responseString = response.shift();
-                const parent = document.getElementById(
-                    "js_header_calendar_" + width
-                ).parentNode;
-                parent.innerHTML = responseString;
-                const new_previous = document.getElementById(
-                    "js_header_calendar_previous_" + width
-                );
-                const new_next = document.getElementById(
-                    "js_header_calendar_next_" + width
-                );
-                if (width === "lg") {
-                    new_previous.replaceWith(previous_lg);
-                    new_next.replaceWith(next_lg);
-                } else if (width === "md") {
-                    new_previous.replaceWith(previous_md);
-                    new_next.replaceWith(next_md);
-                }
+previous_lg.addEventListener("click", function (e) {
+    e.preventDefault();
+    const previous_lg_url = document
+        .getElementById("js_header_calendar_previous_lg")
+        .getAttribute("href");
+    moveBackAndForthInHeaderCalendar(previous_lg_url, width_lg);
+});
 
-                return responseString;
-            }
-        };
-        xhr.send(null);
-    }
+previous_md.addEventListener("click", function (e) {
+    e.preventDefault();
+    const previous_md_url = document
+        .getElementById("js_header_calendar_previous_md")
+        .getAttribute("href");
+    moveBackAndForthInHeaderCalendar(previous_md_url, width_md);
+});
 
-    console.log("カレンダーページです！");
-    const type = document.getElementById("js_calendar_type").value;
-    const width_lg = document.getElementById(
-        "js_header_calendar_width_lg"
-    ).value;
-    const width_md = document.getElementById(
-        "js_header_calendar_width_md"
-    ).value;
-    const previous_lg = document.getElementById(
-        "js_header_calendar_previous_lg"
-    );
-    const previous_md = document.getElementById(
-        "js_header_calendar_previous_md"
-    );
-    const next_lg = document.getElementById("js_header_calendar_next_lg");
-    const next_md = document.getElementById("js_header_calendar_next_md");
+next_lg.addEventListener("click", function (e) {
+    e.preventDefault();
+    const next_lg_url = document
+        .getElementById("js_header_calendar_next_lg")
+        .getAttribute("href");
+    moveBackAndForthInHeaderCalendar(next_lg_url, width_lg);
+});
 
-    previous_lg.addEventListener("click", function (e) {
-        e.preventDefault();
-        const previous_lg_url = document
-            .getElementById("js_header_calendar_previous_lg")
-            .getAttribute("href");
-        moveBackAndForthInHeaderCalendar(previous_lg_url, width_lg);
-    });
+next_md.addEventListener("click", function (e) {
+    e.preventDefault();
+    const next_md_url = document
+        .getElementById("js_header_calendar_next_md")
+        .getAttribute("href");
+    moveBackAndForthInHeaderCalendar(next_md_url, width_md);
+});
 
-    previous_md.addEventListener("click", function (e) {
-        e.preventDefault();
-        const previous_md_url = document
-            .getElementById("js_header_calendar_previous_md")
-            .getAttribute("href");
-        moveBackAndForthInHeaderCalendar(previous_md_url, width_md);
-    });
+const header_dropdown_lg = document.getElementById("header_dropdown_lg");
+const header_dropdown_md = document.getElementById("header_dropdown_md");
 
-    next_lg.addEventListener("click", function (e) {
-        e.preventDefault();
-        const next_lg_url = document
-            .getElementById("js_header_calendar_next_lg")
-            .getAttribute("href");
-        moveBackAndForthInHeaderCalendar(next_lg_url, width_lg);
-    });
+// ヘッダーカレンダー外をクリックで、初期値(今現在のurl(2022/2/1、とか))をカレンダー外から取得し、カレンダーを今現在の年月日に戻す
+header_dropdown_lg.addEventListener("hidden.bs.dropdown", function () {
+    const width = document.getElementById("js_header_calendar_width_lg").value;
+    initializeHeaderCalendarDates(width, previous_lg, next_lg);
+});
 
-    next_md.addEventListener("click", function (e) {
-        e.preventDefault();
-        const next_md_url = document
-            .getElementById("js_header_calendar_next_md")
-            .getAttribute("href");
-        moveBackAndForthInHeaderCalendar(next_md_url, width_md);
-    });
-
-    const header_dropdown_lg = document.getElementById("header_dropdown_lg");
-    const header_dropdown_md = document.getElementById("header_dropdown_md");
-
-    // ヘッダーカレンダー外をクリックで、初期値(今現在のurl(2022/2/1、とか))をカレンダー外から取得し、カレンダーを今現在の年月日に戻す
-    header_dropdown_lg.addEventListener("hidden.bs.dropdown", function () {
-        const width = document.getElementById(
-            "js_header_calendar_width_lg"
-        ).value;
-        initializeHeaderCalendarDates(width, previous_lg, next_lg);
-    });
-
-    header_dropdown_md.addEventListener("hidden.bs.dropdown", function () {
-        const width = document.getElementById(
-            "js_header_calendar_width_md"
-        ).value;
-        initializeHeaderCalendarDates(width, previous_md, next_md);
-    });
-}
-
-let src = document.currentScript.src;
-console.log(src);
+header_dropdown_md.addEventListener("hidden.bs.dropdown", function () {
+    const width = document.getElementById("js_header_calendar_width_md").value;
+    initializeHeaderCalendarDates(width, previous_md, next_md);
+});
+console.log("test.js読み込まれました！");

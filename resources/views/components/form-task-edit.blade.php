@@ -1,5 +1,5 @@
 @include('components.data-list')
-<div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+<div class="modal font-inherit micromodal-slide" id="modal-1" aria-hidden="true">
     <form action="{{ route('p-task.update') }}" method="POST" name="task">
         @csrf
         <input type="hidden" name="task_id" value="{{ $task->id ? $task->id : '' }}" id="task_id">
@@ -7,12 +7,12 @@
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
                 <header class="modal__header">
                     <h2 class="modal__title" id="modal-1-title">
-                        Micromodal
+                        タスク編集
                     </h2>
                     <button class="modal__close" aria-label="Close modal" type="button"
                         data-close-confirm="close-confirm"></button>
                 </header>
-                <main class="modal__content" id="modal-1-content">
+                <main class="modal__content mb-2" id="modal-1-content">
                     {{-- タスク名 --}}
                     <input type="text" name="name" value="{{ old('name', $task ? $task->name : '') }}"
                         placeholder="タスク名を入力" id="first_focus">
@@ -35,7 +35,7 @@
                     <div class="alert alert-danger display-none" id="error-form-task-field-date"></div>
                     <div class="alert alert-danger display-none" id="error-form-task-field-one_day_start_time"></div>
                     <div class="alert alert-danger display-none" id="error-form-task-field-one_day_end_time"></div>
-                    <div class="js_initial-disable-wrapper">
+                    <div class="js_initial-disable-wrapper mb-2">
                         <input id="old_project" type="radio" name="project_choice" value="old"
                             onclick="globalFunctions.toggleEnableAndDisable(['select_project'], ['create_project'])"
                             {{ old('project_choice', 'old') === 'old' ? 'checked' : '' }}>
@@ -51,8 +51,7 @@
                             </select>
                         </div>
                     </div>
-                    <br><br>
-                    <div class="js_initial-disable-wrapper">
+                    <div class="js_initial-disable-wrapper mb-4">
                         <input id="new_project" type="radio" name="project_choice" value="new"
                             onclick="globalFunctions.toggleEnableAndDisable(['create_project'], ['select_project'])"
                             {{ old('project_choice') == 'new' ? 'checked' : '' }}>
@@ -62,46 +61,45 @@
                                 disabled>
                         </div>
                     </div>
-                    <br><br>
+
                     @foreach ($tags as $tag)
                         <input id="{{ $tag->id }}" type="checkbox" name="tags[]" value="{{ $tag->id }}"
                             {{ in_array($tag->id, $associated_tags) ? 'checked' : '' }}>
                         <label for="{{ $tag->id }}">{{ $tag->name }}</label>
                     @endforeach
-                    <input type="text" name="new_tag" value="" placeholder="タグ名を入力">
-                    <br><br>
-                    <a href="{{ route('task.destroy', ['id' => $task->id]) }}" id="task_destroy">削除</a>
-                    <button>実績タスクとしてコピー</button>
+                    <input type="text" name="new_tag" value="" placeholder="タグ名を入力" class="mb-4">
+                    <br>
+                    @if ($task->completion_check === 0)
+                        <a class="ms-1 text-secondary"
+                            href="{{ route('toggle-completion-checks', ['id' => $task->id]) }}"
+                            data-completion-check="{{ $task->completion_check }}" id="task_toggle_completion_checks">
+                            完了にする
+                        </a>
+                    @elseif ($task->completion_check === 1)
+                        <a class="ms-1 text-success"
+                            href="{{ route('toggle-completion-checks', ['id' => $task->id]) }}"
+                            data-completion-check="{{ $task->completion_check }}" id="task_toggle_completion_checks">
+                            未完了にする
+                        </a>
+                    @endif
                 </main>
                 <footer class="modal__footer">
                     <button type="button" class="modal__btn modal__btn-primary" id="js_form-submit">保存</button>
 
                     <button type="button" class="modal__btn" aria-label="Close this dialog window"
                         data-close-confirm="close-confirm">キャンセル</button>
-                    <a href="{{ route('toggle-completion-checks', ['id' => $task->id]) }}"
-                        data-completion-check="{{ $task->completion_check }}" id="task_toggle_completion_checks">
-                        @if ($task->completion_check === 0)
-                            完了にする
-                        @elseif ($task->completion_check === 1)
-                            未完了にする
-                        @endif
-
-                    </a>
+                    <a class="text-reset ms-2" href="{{ route('task.destroy', ['id' => $task->id]) }}"
+                        id="task_destroy">削除</a>
                 </footer>
             </div>
         </div>
     </form>
 </div>
 
-<div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
+<div class="modal font-inherit micromodal-slide" id="modal-2" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1">
         <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-2-title">
-            <header class="modal__header">
-                <h2 class="modal__title" id="modal-2-title">
-                    Micromodal
-                </h2>
-            </header>
-            <main class="modal__content" id="modal-2-content">
+            <main class="modal__content mt-1 mb-3" id="modal-2-content">
                 <p>
                     保存されていない変更を破棄しますか？
                 </p>

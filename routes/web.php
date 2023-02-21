@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/week/{year?}/{month?}/{day?}', [CalendarWeekController::class, 'index'])->where( ['year' => '\d{4}', 'month' => '[1-9]|1[0-2]', 'day' => '[1-9]|1[0-9]|2[0-9]|3[0-1]'] )->name('week');
     Route::get('/month/{year?}/{month?}/{day?}', [CalendarMonthController::class, 'index'])->where( ['year' => '\d{4}', 'month' => '[1-9]|1[0-2]', 'day' => '[1-9]|1[0-9]|2[0-9]|3[0-1]'] )->name('month');
     Route::get('/year/{year?}/{month?}/{day?}', [CalendarYearController::class, 'index'])->where( ['year' => '\d{4}', 'month' => '[1-9]|1[0-2]', 'day' => '[1-9]|1[0-9]|2[0-9]|3[0-1]'] )->name('year');
-    Route::redirect('/', '/month');
+    Route::redirect('/', '/month')->name('route');
 
     // Route::get('/planning-task-input', [PlanningTaskController::class, 'create'])->name('p-task.create');
     Route::post('/planning-task-input', [PlanningTaskController::class, 'store'])->name('p-task.store');
