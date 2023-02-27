@@ -39,7 +39,8 @@ class HomeController extends Controller
 
     public function update(Request $request) {
         $user = User::find(Auth::id());
-        Validator::make($request->all(), [
+
+        $request->validate([
             'name'  => ['required', 'string', 'max:255'],
             'email' => [
                 'required',

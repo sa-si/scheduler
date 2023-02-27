@@ -11,7 +11,6 @@
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
 
-                            {{-- <div class="row mb-3"> --}}
                             <div class="d-flex justify-content-center mt-3">
                                 <div class="profile-input form-floating mb-3 flex-fill">
                                     <input type="email" name="email" value="{{ old('email') }}"
