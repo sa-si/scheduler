@@ -1,0 +1,257 @@
+/* table {
+    margin: 40px 20px 40px 20px;
+} */
+
+.calendar table {
+    table-layout: fixed;
+}
+
+.table-day {
+    width: 100%;
+}
+.calendar table td {
+    border: solid 1px #999999;
+    height: inherit;
+    padding: 0;
+}
+
+.calendar table.table-day td {
+    border-left-width: 0;
+    border-top-width: 0;
+}
+
+.calendar table.table-day td:last-child {
+    border-right-width: 0;
+}
+.calendar table td:before {
+    /* content: ""; */
+    display: block;
+    float: left;
+    height: 50px;
+}
+.calendar table td .day {
+    margin-bottom: 0;
+}
+.calendar table th {
+    border: solid 1px #999999;
+    text-align: center;
+}
+
+.calendar table.table-day th {
+    border-bottom: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+}
+
+.calendar table.table-day thead td {
+    border-bottom: 0;
+}
+
+.calendar-time {
+    width: 60px;
+}
+/* .date {
+    text-align: center;
+} */
+/* .d-grid {
+    grid-auto-flow: column;
+    grid-template-columns: repeat(7, 1fr);
+} */
+/* .tbody {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 1fr);
+    height: 700px;
+} */
+.row-height-test {
+    /* background-color: lightblue; */
+    height: calc((100vh - 120px) / 6);
+}
+
+.row-height-day {
+    height: 50px;
+}
+
+.calendar {
+    display: flex;
+    justify-content: center;
+}
+
+.year-calendar-container {
+    display: grid;
+    grid-auto-rows: minmax(195px, auto);
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    max-width: 1320px;
+    width: 100%;
+}
+
+.thead-day-sticky-top {
+    background-color: #eeeeee;
+    position: sticky;
+    top: 55px;
+}
+
+.thead-check {
+    width: 80px;
+}
+
+.thead-task {
+    /* width: calc((100% - 80px) * 0.5); */
+    width: 876px;
+}
+
+.thead-create {
+    /* width: calc((100% - 80px) * 0.15); */
+    width: 170px;
+}
+
+.thead-destroy {
+    /* width: calc((100% - 80px) * 0.15); */
+    width: 170px;
+}
+
+.trash-can-form {
+    background-color: #ffffff;
+}
+
+.trash-can-no-deleted-tasks {
+    border-bottom-width: 0 !important;
+}
+
+.trash-can-buttons {
+    background-color: #ffffff;
+    position: sticky;
+    top: 55px;
+}
+
+.trash-can-table > thead {
+    background-color: #eeeeee;
+    position: sticky;
+    top: 119px;
+}
+
+.profile-input {
+    max-width: 500px;
+}
+
+.btn.btn-auth:hover {
+    opacity: 0.9;
+    transition: 0.2s;
+}
+/* tbody > tr > td:first-child:not(.monthly-task)::after {
+    background-color: pink;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    content: "";
+    display: inline-block;
+    height: 20px;
+    width: 8px;
+} */
+
+/* tbody > tr:last-child th:after {
+    border-bottom: none;
+} */
+
+/* .monthly-task::after {
+    content: none;
+} */
+
+/* .flex {
+    display: flex;
+} */
+
+/* .check-day {
+    border: solid 1px #999999;
+} */
+
+.display-none {
+    display: none;
+}
+
+/* .display-none:checked + .check-day {
+    color: red;
+} */
+
+.js_form {
+    /* background-color: pink; */
+    height: 100%;
+    /* height: 20px;
+  width: 40px; */
+}
+
+.js_task-list:hover {
+    background-color: rgb(241, 243, 244);
+    /* border-radius: 0.375rem; */
+    transition: 0.2s;
+}
+
+.task {
+    background-color: #00449e;
+}
+
+.task:hover {
+    cursor: pointer;
+    opacity: 0.9;
+    transition: 0.2s;
+}
+/* .js_form:not(:last-child) {
+    border-bottom: 1px solid #000000;
+} */
+
+.tasks-include {
+    color: red;
+}
+
+/* .date.todays-date {
+    color: green;
+} */
+
+a.date {
+    border-radius: 50%;
+    color: inherit;
+    padding-bottom: 0.15rem;
+    padding-top: 0.15rem;
+}
+
+a.date:hover {
+    background-color: rgb(241, 243, 244);
+    transition: 0.2s;
+}
+.date.other-month {
+    color: #70757a;
+}
+
+.link-mark {
+    border-radius: 50%;
+}
+
+.link-mark:hover {
+    background-color: rgb(241, 243, 244);
+    transition: 0.2s;
+}
+
+.modal.font-inherit {
+    font-family: inherit;
+}
+
+/* .other-task-list-item {
+
+} */
+
+.other-task-list-item:hover {
+    background-color: rgb(241, 243, 244);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modal__title {
+    border-radius: 4px;
+}
+
+.modal__title:hover {
+    background-color: rgba(32, 33, 36, 0.12);
+    cursor: pointer;
+    opacity: 0.9;
+    /* filter: brightness(0.7); */
+    transition: 0.2s;
+}
