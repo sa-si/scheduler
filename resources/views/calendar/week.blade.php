@@ -1,0 +1,49 @@
+@extends('layouts.app')
+@section('content')
+<!-- day-table -->
+<form action="#" method="POST">
+    @csrf
+    <!-- weekly-table -->
+    <table>
+        <thead>
+            <tr>
+                <td>あああ</td>
+                <th>21</th>
+                <th>22</th>
+                <th>23</th>
+                <th>24</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>01:00</td>
+                <td>ううう</td>
+                <td>ううう</td>
+                <td>ううう</td>
+                <td>ううう</td>
+            </tr>
+            <tr>
+                <td>02:00</td>
+                <td>ううう</td>
+                <td>ううう</td>
+                <td>ううう</td>
+                <td>ううう</td>
+            </tr>
+            <tr>
+                <td>03:00</td>
+                <td>ううう</td>
+                <td>ううう</td>
+                <td>ううう</td>
+                <td>ううう</td>
+            </tr>
+            <tr>
+                <td>04:00</td>
+                <td>ううう</td>
+                <td>ううう</td>
+                <td>ううう</td>
+                <td>ううう</td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+@endsection

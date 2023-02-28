@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Paginator::useBootstrap();
+        // \DB::listen(function($q){
+
+        //     // SQL文
+        //     dump($q->sql);
+
+        //     // パラメータ
+        //     dump($q->bindings);
+
+        //     // 実行にかかった時間
+        //     dump($q->time);
+
+        // });
     }
 }
