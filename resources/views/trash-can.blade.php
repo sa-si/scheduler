@@ -1,8 +1,5 @@
 @extends('layouts.app')
 
-{{-- @section('javascript')
-<script src="/js/index.js"></script>
-@endsection --}}
 @section('content')
     <form action="{{ route('trash-can') }}" method="POST" class="trash-can-form" name="trashCan" id="js_trash_can_form">
         @csrf

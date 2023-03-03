@@ -1,2 +1,2 @@
 require("./bootstrap");
-require("./test");
+require("./task");
