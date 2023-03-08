@@ -14,11 +14,6 @@ use Illuminate\Support\Facades\Auth;
 
 class PlanningTaskController extends Controller
 {
-    // public function create() {
-    //     $tags = Tag::where('user_id', Auth::id())->get();
-    //     return view('planning-task-input');
-    // }
-
     public function store(Request $request) {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -114,7 +109,6 @@ class PlanningTaskController extends Controller
                 foreach($request->tags as $tag){
                     if (!in_array($tag, array_column($planning_task_tags, 'tag_id'))) {
                         //登録
-                        // dd($task->id, $tag);
                         PlanningTaskTag::insert(['planning_task_id' => $task->id, 'tag_id' => $tag]);
                     }
                 }
@@ -142,11 +136,6 @@ class PlanningTaskController extends Controller
     public function destroy($id)
     {
         PlanningTask::findOrFail($id)->delete();
-
-        // return redirect()
-        // ->route('index')
-        // ->with(['message' => 'タスクを削除しました。',
-        // 'status' => 'alert']);
     }
 
     public function getDailyTasksInJson($day)
